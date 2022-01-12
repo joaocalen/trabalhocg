@@ -11,7 +11,7 @@ public:
     Enemy(GLfloat gX, GLfloat gY, GLfloat gHeight, GLfloat gVel):Character(gX, gY, gHeight, gVel){        
     };
     void Draw(){ 
-        // DesenhaTiro(gX, gY);
+       Character::Draw(gX, gY, gHeight, 1,0,0);
     };
     void Move();    
 };

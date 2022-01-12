@@ -24,6 +24,7 @@ const GLint ViewingHeight = 500;
 int animate = 0;
 
 //Componentes do mundo virtual sendo modelado
+Arena arena;
 // Robo robo; //Um rodo
 // Tiro * tiro = NULL; //Um tiro por vez
 // Alvo alvo(0, 200); //Um alvo por vez
@@ -31,9 +32,11 @@ int animate = 0;
 void renderScene(void)
 {
      // Clear the screen.
+     glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
      glClear(GL_COLOR_BUFFER_BIT);
- 
-    //  robo.Desenha();
+    
+    arena.Draw();
+    
      
     //  if (tiro) tiro->Desenha();
      
@@ -169,19 +172,18 @@ void idle(void)
 }
  
 int main(int argc, char *argv[])
-{
-
+{    
+    arena.LoadComponents("/home/joaogobeti/Joao/UFES/Computacao/computacao_grafica/Trabalho_2D/Enunciado/arena_teste.svg");
     // Initialize openGL with Double buffer and RGB color without transparency.
     // Its interesting to try GLUT_SINGLE instead of GLUT_DOUBLE.
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
  
     // Create the window.
-    glutInitWindowSize(WINDOW_SIZE, WINDOW_SIZE);
+    glutInitWindowSize(WINDOW_SIZE,WINDOW_SIZE);
     glutInitWindowPosition(150,50);
     glutCreateWindow("trabalhocg");
-    Arena arena("/home/joaogobeti/Joao/UFES/Computacao/computacao_grafica/Trabalho_2D/Enunciado/arena_teste.svg");
-    arena.LoadComponents();
+    
     
     // Define callbacks.
     glutDisplayFunc(renderScene);

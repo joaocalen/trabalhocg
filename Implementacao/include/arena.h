@@ -12,35 +12,36 @@
 using namespace std;
 
 class Arena {
-    GLint width_absolute; 
-    GLint height_absolute;
-    GLint width_local;
-    GLint height_local;
+    GLint width; 
+    GLint height;
+    // GLint centerX;
+    // GLint centerY;
     vector<Enemy> enemies;
     vector<Obstacle> obstacles;
-    Player player;
-    string svg_path;    
-
+    Player* player;
     // pensar em como representar outras classes aqui dentro, se é que vou representar nessa classe.    
 private:
     void DrawObstacle(vector<Obstacle> obstacles);
-    void DrawPlayer(Player player);
+    void DrawPlayer(Player* player);
     void DrawEnemies(vector<Enemy> enemies);
     void ChangeCameraPosition(GLfloat x, GLfloat y);
 public:
-    Arena(string path){
-        width_absolute = 0; 
-        height_absolute = 0;
-        height_local = 0;
-        width_local = 0;
-        svg_path = path;        
+    Arena(){
+        this->width = 0; 
+        this->height = 0;                
     };
     void Draw(){ 
         DrawObstacle(obstacles);
         DrawPlayer(player);
         DrawEnemies(enemies);        
     };
-    void LoadComponents();
+    void LoadComponents(string svg_path);
+    GLfloat getWidth(){
+        return this->width;
+    };
+    GLfloat getHeigth(){
+        return this->height;
+    };
     // void Recria(GLfloat x, GLfloat y);
     // bool Atingido(Tiro *tiro);
 };
