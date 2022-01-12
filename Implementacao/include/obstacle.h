@@ -10,6 +10,7 @@ class Obstacle {
     GLfloat gWidth;
     GLfloat gHeight;
 private:
+    void DrawObstacle(GLfloat x, GLfloat y, GLfloat width, GLfloat height);
 public:
     Obstacle(GLfloat gXInit, GLfloat gYInit, GLfloat gWidth, GLfloat gHeight){
         this->gXInit = gXInit;
@@ -17,7 +18,9 @@ public:
         this->gWidth = gWidth;
         this->gHeight = gHeight;
     };
-    void Draw();
+    void Draw(){
+        DrawObstacle(gXInit, gYInit, gWidth, gHeight);
+    };
     void Move();    
     void GetPos(GLfloat &xOut, GLfloat &yOut){
         xOut = gXInit;

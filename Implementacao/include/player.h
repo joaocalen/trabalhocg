@@ -9,7 +9,7 @@ public:
     Player(GLfloat gX, GLfloat gY, GLfloat gHeight, GLfloat gVel):Character(gX, gY, gHeight, gVel){
     };
     void Draw(){ 
-        Character::Draw(gX, gY, gHeight, 0,0,1);
+        Character::Draw(gX, gY, gHeight, 0.0,1.0,0.0);
     };    
     void GetPos(GLfloat &xOut, GLfloat &yOut){
         // xOut = gX;
