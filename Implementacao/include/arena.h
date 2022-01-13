@@ -14,8 +14,8 @@ using namespace std;
 class Arena {
     GLint width; 
     GLint height;
-    // GLint centerX;
-    // GLint centerY;
+    GLfloat centerX;
+    GLfloat centerY;
     vector<Enemy> enemies;
     vector<Obstacle> obstacles;
     Player* player;
@@ -25,23 +25,20 @@ private:
     void DrawPlayer(Player* player);
     void DrawEnemies(vector<Enemy> enemies);
     void ChangeCameraPosition(GLfloat x, GLfloat y);
+    void DrawArena(GLint width, GLint height, GLfloat x, GLfloat y);
 public:
     Arena(){
         this->width = 0; 
         this->height = 0;                
     };
     void Draw(){ 
+        DrawArena(width, height, centerX, centerY);
         DrawObstacle(obstacles);
         DrawPlayer(player);
         DrawEnemies(enemies);        
     };
     void LoadComponents(string svg_path);
-    GLfloat getWidth(){
-        return this->width;
-    };
-    GLfloat getHeigth(){
-        return this->height;
-    };
+    
     // void Recria(GLfloat x, GLfloat y);
     // bool Atingido(Tiro *tiro);
 };
