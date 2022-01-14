@@ -2,12 +2,14 @@
 #define	CHARACTER_H
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include <math.h>
 
 class Character {    
 private:
     void DrawHead(GLfloat radius, GLfloat R, GLfloat G, GLfloat B);
     void DrawBody(GLfloat radius, GLfloat R, GLfloat G, GLfloat B);
-    void DrawLeg(GLfloat radius, GLfloat R, GLfloat G, GLfloat B);
+    void DrawLegs(GLfloat radius, GLfloat R, GLfloat G, GLfloat B);
+    void DrawArm(GLfloat radius, GLfloat R, GLfloat G, GLfloat B);
     void DrawCharacter(GLfloat x, GLfloat y, GLfloat radius, GLfloat R, GLfloat G, GLfloat B);
     void Shoot(GLfloat x, GLfloat y);
 public:

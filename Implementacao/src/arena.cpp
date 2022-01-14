@@ -43,10 +43,10 @@ void Arena::LoadComponents(string svg_path){
         // cy = cy - this->centerY;
         // cx = cx - this->centerX;
         if(!strcmp("green",fill)){
-            Player player(cx,-cy,r,1.0);
+            Player player(cx,-cy,r*5,1.0);
             this->player = &player;
         } else if(!strcmp("red",fill)){
-            Enemy enemy(cx,-cy,r,1.0);
+            Enemy enemy(cx,-cy,r*5,1.0);
             this->enemies.push_back(enemy);
         } else{
             cout <<"Erro inesperado! " << endl;
