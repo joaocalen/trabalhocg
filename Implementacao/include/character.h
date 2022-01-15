@@ -8,6 +8,8 @@ class Character {
 private:
     void DrawHead(GLfloat radius, GLfloat R, GLfloat G, GLfloat B);
     void DrawBody(GLfloat radius, GLfloat R, GLfloat G, GLfloat B);
+    void DrawLeftLeg(GLfloat radius, GLfloat R, GLfloat G, GLfloat B);
+    void DrawRightLeg(GLfloat radius, GLfloat R, GLfloat G, GLfloat B);
     void DrawLegs(GLfloat radius, GLfloat R, GLfloat G, GLfloat B);
     void DrawArm(GLfloat radius, GLfloat R, GLfloat G, GLfloat B);
     void DrawCharacter(GLfloat x, GLfloat y, GLfloat radius, GLfloat R, GLfloat G, GLfloat B);

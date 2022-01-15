@@ -13,34 +13,66 @@ void Character::DrawHead(GLfloat radius, GLfloat R, GLfloat G, GLfloat B)
 }
 void Character::DrawBody(GLfloat radius, GLfloat R, GLfloat G, GLfloat B)
 {
-    glTranslatef(0,-radius*5/16,0);    
+    glTranslatef(0,-radius*4/16,0);    
     glColor3f (R, G, B);
     glBegin(GL_POLYGON);
-        glVertex2f (-radius/8, -radius/4);
-        glVertex2f (radius/8, -radius/4);
-        glVertex2f (radius/8, radius/4);
-        glVertex2f (-radius/8, radius/4);
+        glVertex2f (-radius/16, -3*radius/16);
+        glVertex2f (radius/16, -3*radius/16);
+        glVertex2f (radius/16, 3*radius/16);
+        glVertex2f (-radius/16, 3*radius/16);
     glEnd();
 }
+void Character::DrawLeftLeg(GLfloat radius, GLfloat R, GLfloat G, GLfloat B)
+{
+    glPushMatrix();
+    glRotatef(15, 0, 0, 1);
+    glBegin(GL_POLYGON);
+        glVertex2f (-radius/32, 0);
+        glVertex2f (radius/32, 0);
+        glVertex2f (radius/32, 4*radius/16);
+        glVertex2f (-radius/32, 4*radius/16);
+    glEnd();
+    glTranslatef(0,4*radius/16,0);
+    glRotatef(-30, 0, 0, 1);
+    glBegin(GL_POLYGON);
+        glVertex2f (-radius/32, 0);
+        glVertex2f (radius/32, 0);
+        glVertex2f (radius/32, 4*radius/16);
+        glVertex2f (-radius/32, 4*radius/16);
+    glEnd();    
+    glPopMatrix();
+}
+
+void Character::DrawRightLeg(GLfloat radius, GLfloat R, GLfloat G, GLfloat B)
+{
+    glPushMatrix();
+    glRotatef(-15, 0, 0, 1);
+    glBegin(GL_POLYGON);
+        glVertex2f (-radius/32, 0);
+        glVertex2f (radius/32, 0);
+        glVertex2f (radius/32, 4*radius/16);
+        glVertex2f (-radius/32, 4*radius/16);
+    glEnd();
+    glTranslatef(0,4*radius/16,0);
+    glRotatef(-15, 0, 0, 1);
+    glBegin(GL_POLYGON);
+        glVertex2f (-radius/32, 0);
+        glVertex2f (radius/32, 0);
+        glVertex2f (radius/32, 4*radius/16);
+        glVertex2f (-radius/32, 4*radius/16);
+    glEnd();    
+    glPopMatrix();
+}
+
 void Character::DrawLegs(GLfloat radius, GLfloat R, GLfloat G, GLfloat B)
 {
-    glTranslatef(radius/16,-radius/4,0);
+    glPushMatrix();
+    glTranslatef(0,-3*radius/16,0);
     glColor3f (R, G, B);
-    // glRotatef(45, 0, 0, 1);
-    glBegin(GL_POLYGON);
-        glVertex2f (-radius/32, -7*radius/16);
-        glVertex2f (radius/32, -7*radius/16);
-        glVertex2f (radius/32, 7*radius/16);
-        glVertex2f (-radius/32, 7*radius/16);
-    glEnd();
-    glTranslatef(-radius/8,0,0);
-    // glRotatef(-90, 0, 0, 1);
-    glBegin(GL_POLYGON);
-        glVertex2f (-radius/32, -7*radius/16);
-        glVertex2f (radius/32, -7*radius/16);
-        glVertex2f (radius/32, 7*radius/16);
-        glVertex2f (-radius/32, 7*radius/16);
-    glEnd();    
+    glRotatef(180,0,0,1);
+    DrawLeftLeg(radius,R,G,B);
+    DrawRightLeg(radius,R,G,B);    
+    glPopMatrix();
 }
 void Character::DrawArm(GLfloat radius, GLfloat R, GLfloat G, GLfloat B)
 {
@@ -51,15 +83,15 @@ void Character::DrawArm(GLfloat radius, GLfloat R, GLfloat G, GLfloat B)
     glBegin(GL_POLYGON);
         glVertex2f (-radius/32, 0);
         glVertex2f (radius/32, 0);
-        glVertex2f (radius/32, radius/4);
-        glVertex2f (-radius/32, radius/4);
+        glVertex2f (radius/32, radius/6);
+        glVertex2f (-radius/32, radius/6);
     glEnd();
     glPopMatrix();
 }
 void Character::DrawCharacter(GLfloat x, GLfloat y, GLfloat radius, GLfloat R, GLfloat G, GLfloat B)
 {
     glPushMatrix();    
-    glTranslatef(x,y+radius,0);    
+    glTranslatef(x,y,0);    
     DrawHead(radius, R, G, B);    
     DrawBody(radius, R, G, B);
     DrawArm(radius, R, G, B);
