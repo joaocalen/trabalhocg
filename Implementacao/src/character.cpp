@@ -25,7 +25,7 @@ void Character::DrawBody(GLfloat radius, GLfloat R, GLfloat G, GLfloat B)
 void Character::DrawLeftLeg(GLfloat radius, GLfloat R, GLfloat G, GLfloat B)
 {
     glPushMatrix();
-    glRotatef(15, 0, 0, 1);
+    // glRotatef(15, 0, 0, 1);
     glBegin(GL_POLYGON);
         glVertex2f (-radius/32, 0);
         glVertex2f (radius/32, 0);
@@ -33,7 +33,7 @@ void Character::DrawLeftLeg(GLfloat radius, GLfloat R, GLfloat G, GLfloat B)
         glVertex2f (-radius/32, 4*radius/16);
     glEnd();
     glTranslatef(0,4*radius/16,0);
-    glRotatef(-30, 0, 0, 1);
+    // glRotatef(-30, 0, 0, 1);
     glBegin(GL_POLYGON);
         glVertex2f (-radius/32, 0);
         glVertex2f (radius/32, 0);
@@ -91,10 +91,32 @@ void Character::DrawArm(GLfloat radius, GLfloat R, GLfloat G, GLfloat B)
 void Character::DrawCharacter(GLfloat x, GLfloat y, GLfloat radius, GLfloat R, GLfloat G, GLfloat B)
 {
     glPushMatrix();    
-    glTranslatef(x,y,0);    
-    DrawHead(radius, R, G, B);    
-    DrawBody(radius, R, G, B);
-    DrawArm(radius, R, G, B);
-    DrawLegs(radius, R, G, B);
+    glTranslatef(x,y + radius,0);        
+    DrawHead(radius*2, R, G, B);
+    DrawBody(radius*2, R, G, B);
+    DrawArm(radius*2, R, G, B);
+    DrawLegs(radius*2, R, G, B);
     glPopMatrix();
+}
+
+void Character::MoveX(GLfloat dx)
+{
+    gX += dx;
+}
+
+GLfloat Character::getgX()
+{
+    return this->gX;
+}
+GLfloat Character::getgY()
+{
+    return this->gY;
+}
+GLfloat Character::getgRadius()
+{
+    return this->gRadius;
+}
+GLfloat Character::getgVel()
+{
+    return this->gVel;
 }

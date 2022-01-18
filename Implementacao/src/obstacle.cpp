@@ -13,3 +13,13 @@ void Obstacle::DrawObstacle(GLfloat x, GLfloat y, GLfloat width, GLfloat height)
     glEnd();
     glPopMatrix();
 }
+
+GLfloat Obstacle::GetWidth()
+{
+    return gWidth;
+}
+
+GLfloat Obstacle::GetHeight()
+{
+    return gHeight;
+}

@@ -11,23 +11,23 @@
 #include <string>
 using namespace std;
 
-class Arena {
+class Arena {    
+    // pensar em como representar outras classes aqui dentro, se é que vou representar nessa classe.    
+private:
+    void DrawObstacle(vector<Obstacle> obstacles);
+    void DrawPlayer(Player player);
+    void DrawEnemies(vector<Enemy> enemies);
+    void ChangeCameraPosition(GLfloat x, GLfloat y);
+    void DrawArena(GLint width, GLint height, GLfloat x, GLfloat y);
+public:
     GLint width; 
     GLint height;
     GLfloat centerX;
     GLfloat centerY;
     vector<Enemy> enemies;
     vector<Obstacle> obstacles;
-    Player* player;
-    // pensar em como representar outras classes aqui dentro, se é que vou representar nessa classe.    
-private:
-    void DrawObstacle(vector<Obstacle> obstacles);
-    void DrawPlayer(Player* player);
-    void DrawEnemies(vector<Enemy> enemies);
-    void ChangeCameraPosition(GLfloat x, GLfloat y);
-    void DrawArena(GLint width, GLint height, GLfloat x, GLfloat y);
-public:
-    Arena(){
+    Player player;
+    Arena(){        
         this->width = 0; 
         this->height = 0;                
     };
@@ -38,7 +38,9 @@ public:
         DrawEnemies(enemies);        
     };
     void LoadComponents(string svg_path);
-    
+    bool ableToMoveX(GLfloat dx, GLfloat x, GLfloat y, GLfloat radius, Player player, vector<Enemy> others, vector<Obstacle> obstacles);
+    bool ableToMoveY(GLfloat dy, GLfloat x, GLfloat y, GLfloat radius, Player player, vector<Enemy> others, vector<Obstacle> obstacles);
+    bool checkCollision(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2, GLfloat radius1, GLfloat radius2);
     // void Recria(GLfloat x, GLfloat y);
     // bool Atingido(Tiro *tiro);
 };

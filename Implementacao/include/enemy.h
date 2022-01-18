@@ -8,12 +8,16 @@
 class Enemy : Character {    
 private:    
 public:
-    Enemy(GLfloat gX, GLfloat gY, GLfloat gHeight, GLfloat gVel):Character(gX, gY, gHeight, gVel){        
+    Enemy(GLfloat gX, GLfloat gY, GLfloat gRadius, GLfloat gVel):Character(gX, gY, gRadius, gVel){        
     };
     void Draw(){ 
-       Character::Draw(gX, gY, gHeight, 1,0,0);
+       Character::Draw(gX, gY, gRadius, 1,0,0);
     };
-    void Move();    
+    void Move();
+    GLfloat getgX(){Character::getgX();};
+    GLfloat getgY(){Character::getgY();};
+    GLfloat getgRadius(){Character::getgRadius();};
+    GLfloat getgVel(){Character::getgVel();};
 };
 
 #endif	/* ENEMY_H */

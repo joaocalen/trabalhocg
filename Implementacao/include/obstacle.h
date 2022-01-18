@@ -26,6 +26,8 @@ public:
         xOut = gXInit;
         yOut = gYInit;
     };
+    GLfloat GetWidth();
+    GLfloat GetHeight();
 };
 
 #endif	/* OBSTACLE_H */

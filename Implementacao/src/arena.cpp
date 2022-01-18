@@ -24,8 +24,6 @@ void Arena::LoadComponents(string svg_path){
             this -> width = width;
             this -> height = height;
         } else if(!strcmp("black",fill)){
-            //antes x = -136  ----------- agora x = 27
-            //antes y = 160  ------------- agora y = 65
             cy = cy - this->centerY - this->height/2;
             cx = cx - this->centerX - this->width/2;
             Obstacle ob(cx + width/2,-cy -height,width,height);
@@ -45,8 +43,10 @@ void Arena::LoadComponents(string svg_path){
         cy = cy - this->centerY - this->height/2;
         cx = cx - this->centerX - this->width/2;
         if(!strcmp("green",fill)){
-            Player player(cx,-cy,r,1.0);
-            this->player = &player;
+            this->player.setgX(cx);
+            this->player.setgY(-cy);
+            this->player.setgRadius(r);
+            this->player.setgVel(1.0);
         } else if(!strcmp("red",fill)){
             Enemy enemy(cx,-cy,r,1.0);
             this->enemies.push_back(enemy);
@@ -71,9 +71,9 @@ void Arena::DrawArena(GLint width, GLint height, GLfloat x, GLfloat y)
     glPopMatrix();
 }
 
-void Arena::DrawPlayer(Player* player)
+void Arena::DrawPlayer(Player player)
 {
-    player->Draw();
+    player.Draw();
 }
 
 void Arena::DrawObstacle(vector<Obstacle> obstacles)
@@ -88,4 +88,43 @@ void Arena::DrawEnemies(vector<Enemy> enemies)
     for (Enemy e : enemies){
         e.Draw();
     }
+}
+
+bool Arena::ableToMoveX(GLfloat dx, GLfloat x, GLfloat y, GLfloat radius, Player player, vector<Enemy> enemies, vector<Obstacle> obstacles)
+{
+    for(Obstacle o : obstacles)
+    {
+        GLfloat oX, oY;
+        o.GetPos(oX,oY);
+        if(checkCollision(x + dx, y, oX, oY, radius, o.GetWidth()/2)) return false;
+    }
+    if((x != player.getgX() || y != player.getgY()) && checkCollision(x + dx, y, player.getgX(), player.getgY(), radius/2, player.getgRadius()/2)) return false;    
+    
+    for(Enemy e : enemies)
+    {
+        if((x != e.getgX() || y != e.getgY()) && checkCollision(x + dx, y, e.getgX(), e.getgY(), radius/2, e.getgRadius()/2)) return false;
+    }
+    return true;
+}
+
+bool Arena::ableToMoveY(GLfloat dy, GLfloat x, GLfloat y, GLfloat radius, Player player, vector<Enemy> enemies, vector<Obstacle> obstacles)
+{
+    for(Obstacle o : obstacles)
+    {
+        GLfloat oX, oY;
+        o.GetPos(oX,oY);
+        if(checkCollision(x, y + dy, oX, oY, radius, o.GetHeight()/2)) return false;
+    }
+    if((x != player.getgX() || y != player.getgY()) && checkCollision(x, y + dy, player.getgX(), player.getgY(), radius, player.getgRadius())) return false;    
+    
+    for(Enemy e : enemies)
+    {
+        if((x != e.getgX() || y != e.getgY()) && checkCollision(x, y + dy, e.getgX(), e.getgY(), radius, e.getgRadius())) return false;
+    }
+    return true;
+}
+
+bool Arena::checkCollision(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2, GLfloat radius1, GLfloat radius2)
+{
+    return sqrt(pow(x1-x2,2) + pow(y1-y2,2)) < radius1+radius2;
 }

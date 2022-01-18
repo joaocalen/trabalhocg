@@ -3,6 +3,9 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <math.h>
+#include "../include/obstacle.h"
+#include "vector"
+using namespace std;
 
 class Character {    
 private:
@@ -17,22 +20,28 @@ private:
 public:
     GLfloat gX;
     GLfloat gY;
-    GLfloat gHeight;
+    GLfloat gRadius;
     GLfloat gVel;
-    Character(GLfloat gX, GLfloat gY, GLfloat gHeight, GLfloat gVel){
+    Character(GLfloat gX, GLfloat gY, GLfloat gRadius, GLfloat gVel){
         this->gX = gX;
         this->gY = gY;
-        this->gHeight = gHeight;
+        this->gRadius = gRadius;
         this->gVel = gVel;
     };
     void Draw(GLfloat x,GLfloat y, GLfloat radius, GLfloat R, GLfloat G, GLfloat B){ 
         DrawCharacter(x, y, radius, R, G, B);
     };
-    void Move(GLfloat dx);    
+    void MoveX(GLfloat dx);
     void GetPos(GLfloat &xOut, GLfloat &yOut){
         xOut = gX;
         yOut = gY;
     };
+    GLfloat getgX();
+    GLfloat getgY();
+    GLfloat getgRadius();
+    GLfloat getgVel();
+    
+    
 };
 
 #endif	/* CHARACTER_H */

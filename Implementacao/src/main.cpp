@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <stdio.h>
+#include <iostream>
 #include "../include/arena.h"
 #define INC_KEY 1
 #define INC_KEYIDLE 0.01
@@ -108,6 +109,14 @@ void ResetKeyStatus()
        keyStatus[i] = 0; 
 }
 
+void motion(int x, int y)
+{
+    
+    GLfloat gx;
+    GLfloat gy;
+    arena.player.GetPos(gx,gy);   
+}
+
 void init(void)
 {
     ResetKeyStatus();
@@ -132,11 +141,11 @@ void idle(void)
     //Treat keyPress
     if(keyStatus[(int)('a')])
     {
-        // robo.MoveEmX(-inc);
+        if(arena.ableToMoveX(-inc, arena.player.getgX(), arena.player.getgY(), arena.player.getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.player.MoveX(-inc);
     }
     if(keyStatus[(int)('d')])
     {
-        // robo.MoveEmX(inc);
+        if(arena.ableToMoveX(inc, arena.player.getgX(), arena.player.getgY(), arena.player.getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.player.MoveX(inc);
     }
     
     //Trata o tiro (soh permite um tiro por vez)
@@ -190,6 +199,7 @@ int main(int argc, char *argv[])
     glutKeyboardFunc(keyPress);
     glutIdleFunc(idle);
     glutKeyboardUpFunc(keyup);
+    glutPassiveMotionFunc(motion);
     
     init();
  
