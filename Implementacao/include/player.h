@@ -4,6 +4,8 @@
 
 
 class Player : Character {
+    bool jumping;
+    bool falling;
 private:    
 public:
     

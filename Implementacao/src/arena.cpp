@@ -92,6 +92,7 @@ void Arena::DrawEnemies(vector<Enemy> enemies)
 
 bool Arena::ableToMoveX(GLfloat dx, GLfloat x, GLfloat y, GLfloat radius, Player player, vector<Enemy> enemies, vector<Obstacle> obstacles)
 {
+    if(checkCollision(x + dx, 0, -this->width/2, 0, radius/2, 0) || checkCollision(x + dx, 0, this->width/2, 0, radius/2, 0)) return false;
     for(Obstacle o : obstacles)
     {
         GLfloat oX, oY;
@@ -109,6 +110,7 @@ bool Arena::ableToMoveX(GLfloat dx, GLfloat x, GLfloat y, GLfloat radius, Player
 
 bool Arena::ableToMoveY(GLfloat dy, GLfloat x, GLfloat y, GLfloat radius, Player player, vector<Enemy> enemies, vector<Obstacle> obstacles)
 {
+    if(checkCollision(0, y + dy, 0, -this->height/2, radius, 0) || checkCollision(0, y + dy, 0, this->height/2, radius, 0)) return false;
     for(Obstacle o : obstacles)
     {
         GLfloat oX, oY;
