@@ -104,6 +104,11 @@ void Character::MoveX(GLfloat dx)
     gX += dx;
 }
 
+void Character::MoveY(GLfloat dy)
+{
+    gY += dy;
+}
+
 GLfloat Character::getgX()
 {
     return this->gX;

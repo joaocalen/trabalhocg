@@ -16,4 +16,22 @@ void Player::setgVel(GLfloat gVel)
 {
     this->gVel = gVel;
 }
+void Player::setFalling(bool falling)
+{
+    this->falling = falling;
+}
 
+bool Player::getFalling()
+{
+    return this->falling;
+}
+
+void Player::setJumping(bool jumping)
+{
+    this->jumping = jumping;
+}
+
+bool Player::getJumping()
+{
+    return this->jumping;
+}

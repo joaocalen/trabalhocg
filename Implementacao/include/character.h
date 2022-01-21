@@ -32,6 +32,7 @@ public:
         DrawCharacter(x, y, radius, R, G, B);
     };
     void MoveX(GLfloat dx);
+    void MoveY(GLfloat dy);
     void GetPos(GLfloat &xOut, GLfloat &yOut){
         xOut = gX;
         yOut = gY;

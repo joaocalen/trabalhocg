@@ -110,8 +110,7 @@ void ResetKeyStatus()
 }
 
 void motion(int x, int y)
-{
-    
+{    
     GLfloat gx;
     GLfloat gy;
     arena.player.GetPos(gx,gy);   
@@ -132,12 +131,27 @@ void init(void)
             100);    // Z coordinate of the “far” plane
     glMatrixMode(GL_MODELVIEW); // Select the projection matrix
     glLoadIdentity();
-      
+    
+}
+
+void mouseclick(int button, int state, int x, int y)
+{
+    if(button == GLUT_RIGHT_BUTTON){
+        if(state == GLUT_DOWN)
+        {
+            arena.player.setJumping(0);
+            arena.player.setFalling(1);
+        }else
+        {
+            arena.player.setJumping(1);            
+        }
+    }    
 }
 
 void idle(void)
 {
     double inc = INC_KEYIDLE;
+    double incy = 0.05;
     //Treat keyPress
     if(keyStatus[(int)('a')])
     {
@@ -146,6 +160,21 @@ void idle(void)
     if(keyStatus[(int)('d')])
     {
         if(arena.ableToMoveX(inc, arena.player.getgX(), arena.player.getgY(), arena.player.getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.player.MoveX(inc);
+    }
+
+    if(arena.player.getJumping())
+    {
+        if(arena.ableToMoveY(-incy, arena.player.getgX(), arena.player.getgY(), arena.player.getgRadius(),arena.player, arena.enemies, arena.obstacles))
+        {
+            arena.player.MoveY(-incy);
+            // arena.player.setJumping(0);
+            arena.player.setFalling(0);
+        }
+    }
+    if(arena.player.getFalling())
+    {
+        if(arena.ableToMoveY(incy, arena.player.getgX(), arena.player.getgY(), arena.player.getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.player.MoveY(incy);
+        else arena.player.setFalling(0);
     }
     
     //Trata o tiro (soh permite um tiro por vez)
@@ -200,6 +229,7 @@ int main(int argc, char *argv[])
     glutIdleFunc(idle);
     glutKeyboardUpFunc(keyup);
     glutPassiveMotionFunc(motion);
+    glutMouseFunc(mouseclick);
     
     init();
  

@@ -20,8 +20,8 @@ private:
     void ChangeCameraPosition(GLfloat x, GLfloat y);
     void DrawArena(GLint width, GLint height, GLfloat x, GLfloat y);
 public:
-    GLint width; 
-    GLint height;
+    GLfloat width; 
+    GLfloat height;
     GLfloat centerX;
     GLfloat centerY;
     vector<Enemy> enemies;
@@ -40,7 +40,9 @@ public:
     void LoadComponents(string svg_path);
     bool ableToMoveX(GLfloat dx, GLfloat x, GLfloat y, GLfloat radius, Player player, vector<Enemy> others, vector<Obstacle> obstacles);
     bool ableToMoveY(GLfloat dy, GLfloat x, GLfloat y, GLfloat radius, Player player, vector<Enemy> others, vector<Obstacle> obstacles);
-    bool checkCollision(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2, GLfloat radius1, GLfloat radius2);
+    bool checkCollisionArenaBounds(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2, GLfloat radius1, GLfloat radius2);
+    bool checkCollisionCharacter(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2, GLfloat radius1, GLfloat radius2);
+    bool checkCollisionObstacle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2, GLfloat radius, GLfloat height, GLfloat width);
     // void Recria(GLfloat x, GLfloat y);
     // bool Atingido(Tiro *tiro);
 };

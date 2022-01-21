@@ -19,14 +19,21 @@ public:
     void MoveX(GLfloat dx){
         Character::MoveX(dx);
     }
+    void MoveY(GLfloat dy){
+        Character::MoveY(dy);
+    }
     void setgX(GLfloat gX);
     void setgY(GLfloat gY);
     void setgRadius(GLfloat gHeight);
     void setgVel(GLfloat gVel);
+    void setJumping(bool jumping);
+    void setFalling(bool falling);
     GLfloat getgX(){Character::getgX();};
     GLfloat getgY(){Character::getgY();};
     GLfloat getgRadius(){Character::getgRadius();};
     GLfloat getgVel(){Character::getgVel();};
+    bool getJumping();
+    bool getFalling();    
     void GetPos(GLfloat &xOut, GLfloat &yOut){
         xOut = gX;
         yOut = gY;
