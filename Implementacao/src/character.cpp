@@ -77,8 +77,16 @@ void Character::DrawLegs(GLfloat radius, GLfloat R, GLfloat G, GLfloat B)
 void Character::DrawArm(GLfloat radius, GLfloat R, GLfloat G, GLfloat B)
 {
     glPushMatrix();
-    glTranslatef(radius/16,0,0);
-    glRotatef(-90,0,0,1);
+    if(this->right_sided)
+    {
+        glTranslatef(radius/16,0,0);
+        glRotatef(-thetaArm,0,0,1);
+    }
+    else
+    {
+        glTranslatef(-radius/16,0,0);
+        glRotatef(thetaArm,0,0,1);
+    }
     glColor3f (R, G, B);
     glBegin(GL_POLYGON);
         glVertex2f (-radius/32, 0);
@@ -90,8 +98,8 @@ void Character::DrawArm(GLfloat radius, GLfloat R, GLfloat G, GLfloat B)
 }
 void Character::DrawCharacter(GLfloat x, GLfloat y, GLfloat radius, GLfloat R, GLfloat G, GLfloat B)
 {
-    glPushMatrix();    
-    glTranslatef(x,y + radius,0);        
+    glPushMatrix();
+    glTranslatef(x,y + radius,0);
     DrawHead(radius*2, R, G, B);
     DrawBody(radius*2, R, G, B);
     DrawArm(radius*2, R, G, B);
@@ -101,12 +109,28 @@ void Character::DrawCharacter(GLfloat x, GLfloat y, GLfloat radius, GLfloat R, G
 
 void Character::MoveX(GLfloat dx)
 {
+    if(dx > 0) this->right_sided = true;
+    else this->right_sided = false;
     gX += dx;
 }
 
 void Character::MoveY(GLfloat dy)
 {
     gY += dy;
+}
+
+void Character::deleteShot()
+{
+    delete shot;
+    shot = NULL;
+}
+
+Shot* Character::Shoot()
+{
+    if(right_sided)
+        shot = new Shot(gX + 2*gRadius/3, gY, -thetaArm);
+    else
+        shot = new Shot(gX - 2*gRadius/3, gY , thetaArm);
 }
 
 GLfloat Character::getgX()
@@ -124,4 +148,17 @@ GLfloat Character::getgRadius()
 GLfloat Character::getgVel()
 {
     return this->gVel;
+}
+
+GLfloat Character::getThetaArm()
+{
+    return this->thetaArm;
+}
+Shot* Character::getShot()
+{
+    return shot;
+}
+GLfloat Character::setThetaArm(GLfloat thetaArm)
+{
+    this->thetaArm = thetaArm;
 }

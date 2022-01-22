@@ -28,10 +28,15 @@ public:
     void setgVel(GLfloat gVel);
     void setJumping(bool jumping);
     void setFalling(bool falling);
+    Shot* Shoot(){Character::Shoot();};
     GLfloat getgX(){Character::getgX();};
     GLfloat getgY(){Character::getgY();};
     GLfloat getgRadius(){Character::getgRadius();};
     GLfloat getgVel(){Character::getgVel();};
+    GLfloat getThetaArm(){Character::getThetaArm();};
+    Shot* getShot(){Character::getShot();};
+    void deleteShot(){Character::deleteShot();};
+    GLfloat setThetaArm(GLfloat theta){Character::setThetaArm(theta);};
     bool getJumping();
     bool getFalling();    
     void GetPos(GLfloat &xOut, GLfloat &yOut){

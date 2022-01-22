@@ -23,11 +23,12 @@ const GLint ViewingHeight = 500;
 
 //Controla a animacao do robo
 int animate = 0;
-
+int old_x = -1;
+int old_y = -1;
 //Componentes do mundo virtual sendo modelado
 Arena arena;
 // Robo robo; //Um rodo
-// Tiro * tiro = NULL; //Um tiro por vez
+// Shot * shot = NULL; //Um tiro por vez
 // Alvo alvo(0, 200); //Um alvo por vez
 
 void renderScene(void)
@@ -39,7 +40,7 @@ void renderScene(void)
     arena.Draw();
     
      
-    //  if (tiro) tiro->Desenha();
+    if (arena.player.getShot()) arena.player.getShot()->Draw();
      
     //  alvo.Desenha();
 
@@ -86,8 +87,8 @@ void keyPress(unsigned char key, int x, int y)
             //  robo.RodaBraco3(+INC_KEY);   //Without keyStatus trick
              break;
         case ' ':
-            //  if (!tiro)
-            //     tiro = robo.Atira();
+             if (!arena.player.getShot())
+                arena.player.Shoot();
              break;
         case 27 :
              exit(0);
@@ -111,9 +112,11 @@ void ResetKeyStatus()
 
 void motion(int x, int y)
 {    
-    GLfloat gx;
-    GLfloat gy;
-    arena.player.GetPos(gx,gy);   
+    if (old_y == -1) old_y = y;
+    arena.player.setThetaArm(arena.player.getThetaArm() + 0.3*(y - old_y));
+    old_y = y;
+    if(fabs(arena.player.getThetaArm()) > 135) arena.player.setThetaArm(135);
+    if(fabs(arena.player.getThetaArm()) < 45) arena.player.setThetaArm(45);
 }
 
 void init(void)
@@ -179,19 +182,26 @@ void idle(void)
     
     //Trata o tiro (soh permite um tiro por vez)
     //Poderia usar uma lista para tratar varios tiros
-    // if(tiro){
-    //     tiro->Move();
+    if(arena.player.getShot()){
+        GLfloat x_shot;
+        GLfloat y_shot;
+        arena.player.getShot()->GetPos(x_shot,y_shot);
 
-    //     //Trata colisao
-    //     if (alvo.Atingido(tiro)){
-    //         alvo.Recria(rand()%500 - 250, 200);
-    //     }
+        arena.player.getShot()->Move();        
 
-    //     if (!tiro->Valido()){ 
-    //         delete tiro;
-    //         tiro = NULL;
-    //     }
-    // }
+        //Trata colisao
+        // if (alvo.Atingido(tiro)){
+        //     alvo.Recria(rand()%500 - 250, 200);
+        // }
+
+        if (!arena.player.getShot()->Valid()){ 
+            arena.player.deleteShot();
+        }
+        if (!arena.ableToMoveY(0, x_shot, y_shot, 1, arena.player, arena.enemies, arena.obstacles) || !arena.ableToMoveX(0, x_shot, y_shot, 1, arena.player, arena.enemies, arena.obstacles))
+        {
+            arena.player.deleteShot();
+        }
+    }
     
     
     //Control animation

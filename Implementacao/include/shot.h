@@ -2,7 +2,6 @@
 #define	TIRO_H
 #include <GL/gl.h>
 #include <GL/glu.h>
-
 #define radiusShot 5
 
 class Shot {
@@ -13,8 +12,8 @@ class Shot {
     GLfloat gDirectionAng;
     GLfloat gVel;
 private:
-    void DesenhaCirc(GLint radius, GLfloat R, GLfloat G, GLfloat B);
-    void DesenhaTiro(GLfloat x, GLfloat y);
+    void DrawCircle(GLint radius, GLfloat R, GLfloat G, GLfloat B);
+    void DrawShot(GLfloat x, GLfloat y);
 public:
     Shot(GLfloat x, GLfloat y, GLfloat directionAng){
         gXInit = x; 
@@ -22,13 +21,13 @@ public:
         gX = x; 
         gY = y; 
         gDirectionAng = directionAng; 
-        gVel = 0.1;
+        gVel = 0.02;
     };
-    void Desenha(){ 
-        DesenhaTiro(gX, gY);
+    void Draw(){ 
+        DrawShot(gX, gY);
     };
     void Move();
-    bool Valido();
+    bool Valid();
     void GetPos(GLfloat &xOut, GLfloat &yOut){
         xOut = gX;
         yOut = gY;

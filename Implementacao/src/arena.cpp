@@ -101,9 +101,17 @@ bool Arena::ableToMoveX(GLfloat dx, GLfloat x, GLfloat y, GLfloat radius, Player
     }
     if((x != player.getgX() || y != player.getgY()) && checkCollisionCharacter(x + dx, y, player.getgX(), player.getgY(), radius/2, player.getgRadius()/2)) return false;    
     
+    int i = 0;
     for(Enemy e : enemies)
     {
-        if((x != e.getgX() || y != e.getgY()) && checkCollisionCharacter(x + dx, y, e.getgX(), e.getgY(), radius/2, e.getgRadius()/2)) return false;
+        if((x != e.getgX() || y != e.getgY()) && checkCollisionCharacter(x + dx, y, e.getgX(), e.getgY(), radius/2, e.getgRadius()/2))
+        {
+            if(dx == 0){
+                this->enemies.erase(this->enemies.begin()+i);                
+            }
+            return false;
+        }
+        i++; 
     }
     return true;
 }
@@ -119,9 +127,16 @@ bool Arena::ableToMoveY(GLfloat dy, GLfloat x, GLfloat y, GLfloat radius, Player
     }
     if((x != player.getgX() || y != player.getgY()) && checkCollisionCharacter(x, y + dy, player.getgX(), player.getgY(), radius, player.getgRadius())) return false;    
     
+    int i = 0;
     for(Enemy e : enemies)
     {
-        if((x != e.getgX() || y != e.getgY()) && checkCollisionCharacter(x, y + dy, e.getgX(), e.getgY(), radius, e.getgRadius())) return false;
+        if((x != e.getgX() || y != e.getgY()) && checkCollisionCharacter(x, y + dy, e.getgX(), e.getgY(), radius, e.getgRadius())){
+            if(dy == 0){
+                this->enemies.erase(this->enemies.begin()+i);                
+            }
+            return false;
+        }
+        i++;
     }
     return true;
 }
