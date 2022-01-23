@@ -12,7 +12,7 @@ class Shot {
     GLfloat gDirectionAng;
     GLfloat gVel;
 private:
-    void DrawCircle(GLint radius, GLfloat R, GLfloat G, GLfloat B);
+    void DrawCircle(GLfloat radius, GLfloat R, GLfloat G, GLfloat B);
     void DrawShot(GLfloat x, GLfloat y);
 public:
     Shot(GLfloat x, GLfloat y, GLfloat directionAng){

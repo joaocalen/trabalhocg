@@ -162,3 +162,13 @@ GLfloat Character::setThetaArm(GLfloat thetaArm)
 {
     this->thetaArm = thetaArm;
 }
+
+bool Character::getRightSided()
+{
+    return right_sided;
+}
+
+void Character::setRightSided(bool right_sided)
+{
+    this->right_sided = right_sided;
+}

@@ -53,6 +53,8 @@ public:
     GLfloat getThetaArm();
     Shot* getShot();
     GLfloat setThetaArm(GLfloat thetaArm);
+    bool getRightSided();
+    void setRightSided(bool right_sided);
     
 };
 

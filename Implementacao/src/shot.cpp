@@ -2,7 +2,7 @@
 #include <math.h>
 #define DISTANCIA_MAX 500
 
-void Shot::DrawCircle(GLint radius, GLfloat R, GLfloat G, GLfloat B)
+void Shot::DrawCircle(GLfloat radius, GLfloat R, GLfloat G, GLfloat B)
 {
     glColor3f (R, G, B);
     glBegin(GL_POLYGON);
@@ -16,7 +16,7 @@ void Shot::DrawShot(GLfloat x, GLfloat y)
 {
     glPushMatrix();
     glTranslatef(x,y,0);
-    DrawCircle(1, 1, 1, 1);
+    DrawCircle(0.3, 1, 1, 1);
     glPopMatrix();
 }
 

@@ -41,6 +41,12 @@ void renderScene(void)
     
      
     if (arena.player.getShot()) arena.player.getShot()->Draw();
+    
+    for (int i = 0; i < arena.enemies.size(); i++)
+    {
+        if (arena.enemies.at(i).getShot()) arena.enemies.at(i).getShot()->Draw();
+    }
+    
      
     //  alvo.Desenha();
 
@@ -86,9 +92,7 @@ void keyPress(unsigned char key, int x, int y)
         case 'Y':
             //  robo.RodaBraco3(+INC_KEY);   //Without keyStatus trick
              break;
-        case ' ':
-             if (!arena.player.getShot())
-                arena.player.Shoot();
+        case ' ':             
              break;
         case 27 :
              exit(0);
@@ -148,7 +152,12 @@ void mouseclick(int button, int state, int x, int y)
         {
             arena.player.setJumping(1);            
         }
-    }    
+    }
+    if (button == GLUT_LEFT_BUTTON && state != GLUT_DOWN)
+    {
+        if (!arena.player.getShot())
+            arena.player.Shoot();
+    }
 }
 
 void idle(void)
@@ -163,6 +172,21 @@ void idle(void)
     if(keyStatus[(int)('d')])
     {
         if(arena.ableToMoveX(inc, arena.player.getgX(), arena.player.getgY(), arena.player.getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.player.MoveX(inc);
+    }
+    
+    for(int i = 0; i < arena.enemies.size(); i++)
+    {
+        if (arena.enemies.at(i).getRightSided())
+        {
+            if(arena.ableToMoveX(inc, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.enemies.at(i).MoveX(inc);
+            else arena.enemies.at(i).setRightSided(false);
+        }
+        else
+        {
+            if(arena.ableToMoveX(-inc, arena.player.getgX(), arena.player.getgY(), arena.player.getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.enemies.at(i).MoveX(-inc);
+            else arena.enemies.at(i).setRightSided(true);
+        }
+        
     }
 
     if(arena.player.getJumping())
@@ -189,18 +213,34 @@ void idle(void)
 
         arena.player.getShot()->Move();        
 
-        //Trata colisao
-        // if (alvo.Atingido(tiro)){
-        //     alvo.Recria(rand()%500 - 250, 200);
-        // }
-
         if (!arena.player.getShot()->Valid()){ 
             arena.player.deleteShot();
         }
-        if (!arena.ableToMoveY(0, x_shot, y_shot, 1, arena.player, arena.enemies, arena.obstacles) || !arena.ableToMoveX(0, x_shot, y_shot, 1, arena.player, arena.enemies, arena.obstacles))
+        if (!arena.ableToMoveY(0, x_shot, y_shot, 0.3, arena.player, arena.enemies, arena.obstacles) || !arena.ableToMoveX(0, x_shot, y_shot, 0.3, arena.player, arena.enemies, arena.obstacles))
         {
             arena.player.deleteShot();
         }
+    }
+    
+    for(int i = 0; i < arena.enemies.size(); i++)
+    {
+        if(arena.enemies.at(i).getShot()){
+            GLfloat x_shot;
+            GLfloat y_shot;
+            arena.enemies.at(i).getShot()->GetPos(x_shot,y_shot);
+
+            arena.enemies.at(i).getShot()->Move();
+            if (!arena.enemies.at(i).getShot()->Valid()){ 
+                arena.enemies.at(i).deleteShot();
+            }
+            if (!arena.ableToMoveY(0, x_shot, y_shot, 0.3, arena.player, arena.enemies, arena.obstacles) || !arena.ableToMoveX(0, x_shot, y_shot, 0.3, arena.player, arena.enemies, arena.obstacles))
+            {
+                arena.enemies.at(i).deleteShot();
+            }
+        }
+        else{
+            arena.enemies.at(i).Shoot();
+        }        
     }
     
     

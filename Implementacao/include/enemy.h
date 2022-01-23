@@ -5,7 +5,7 @@
 #include "../include/character.h"
 
 
-class Enemy : Character {    
+class Enemy : Character {
 private:    
 public:
     Enemy(GLfloat gX, GLfloat gY, GLfloat gRadius, GLfloat gVel):Character(gX, gY, gRadius, gVel){        
@@ -13,11 +13,21 @@ public:
     void Draw(){ 
        Character::Draw(gX, gY, gRadius, 1,0,0);
     };
-    void Move();
+    void MoveX(GLfloat dx){
+        Character::MoveX(dx);
+    }
+    void MoveY(GLfloat dy){
+        Character::MoveY(dy);
+    }
+    Shot* Shoot(){Character::Shoot();};
+    Shot* getShot(){Character::getShot();};
+    void deleteShot(){Character::deleteShot();};
     GLfloat getgX(){Character::getgX();};
     GLfloat getgY(){Character::getgY();};
     GLfloat getgRadius(){Character::getgRadius();};
     GLfloat getgVel(){Character::getgVel();};
+    bool getRightSided(){Character::getRightSided();};
+    void setRightSided(bool value){Character::setRightSided(value);};
 };
 
 #endif	/* ENEMY_H */
