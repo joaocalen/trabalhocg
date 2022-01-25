@@ -111,12 +111,12 @@ void Character::MoveX(GLfloat dx)
 {
     if(dx > 0) this->right_sided = true;
     else this->right_sided = false;
-    gX += dx;
+    this -> gX += dx;
 }
 
 void Character::MoveY(GLfloat dy)
 {
-    gY += dy;
+    this -> gY += dy;
 }
 
 void Character::deleteShot()

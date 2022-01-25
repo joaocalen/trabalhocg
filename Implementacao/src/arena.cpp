@@ -54,6 +54,12 @@ void Arena::LoadComponents(string svg_path){
             cout <<"Erro inesperado! " << endl;
         } 
         element = element -> NextSiblingElement("circle");
+    }
+    for(int i = 0; i < this->enemies.size();i++){
+        while(ableToMoveY(-INC_KEYIDLE, this->enemies.at(i).getgX(), this->enemies.at(i).getgY(), this->enemies.at(i).getgRadius(), this->player, this->enemies, this->obstacles))
+        {
+            this->enemies.at(i).MoveY(-INC_KEYIDLE);
+        }
     }       
 }
 
@@ -118,26 +124,26 @@ bool Arena::ableToMoveX(GLfloat dx, GLfloat x, GLfloat y, GLfloat radius, Player
 
 bool Arena::ableToMoveY(GLfloat dy, GLfloat x, GLfloat y, GLfloat radius, Player player, vector<Enemy> enemies, vector<Obstacle> obstacles)
 {
-    if(checkCollisionArenaBounds(0, y + dy, 0, -this->height/2, radius, 0) || checkCollisionArenaBounds(0, y + dy, 0, this->height/2, radius, 0)) return false;
+    // cout << "dy: " << dy << "; x: " << x << "; y: " << y << "; r: " << radius << endl;
+    if(checkCollisionArenaBounds(0, y + dy, 0, -this->height/2, radius, 0) || checkCollisionArenaBounds(0, y + dy, 0, this->height/2, radius, 0)) return false;    
     for(Obstacle o : obstacles)
     {
         GLfloat oX, oY;
         o.GetPos(oX,oY);
-        if(checkCollisionObstacle(x, y + dy, oX, oY, radius, o.GetHeight(),o.GetWidth())) return false;
+        if(checkCollisionObstacle(x, y + dy, oX, oY, radius, o.GetHeight(),o.GetWidth())){ cout << "oi" << endl;return false;}
     }
     if((x != player.getgX() || y != player.getgY()) && checkCollisionCharacter(x, y + dy, player.getgX(), player.getgY(), radius, player.getgRadius())) return false;    
-    
     int i = 0;
     for(Enemy e : enemies)
     {
         if((x != e.getgX() || y != e.getgY()) && checkCollisionCharacter(x, y + dy, e.getgX(), e.getgY(), radius, e.getgRadius())){
             if(dy == 0){
                 this->enemies.erase(this->enemies.begin()+i);                
-            }
+            }            
             return false;
         }
         i++;
-    }
+    }    
     return true;
 }
 

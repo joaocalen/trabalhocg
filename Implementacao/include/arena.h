@@ -10,6 +10,9 @@
 #include <vector>
 #include <string>
 using namespace std;
+#define INC_KEY 1
+#define INC_KEYIDLE 0.01
+
 
 class Arena {    
     // pensar em como representar outras classes aqui dentro, se é que vou representar nessa classe.    

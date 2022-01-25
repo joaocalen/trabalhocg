@@ -6,8 +6,6 @@
 #include <stdio.h>
 #include <iostream>
 #include "../include/arena.h"
-#define INC_KEY 1
-#define INC_KEYIDLE 0.01
 #define WINDOW_SIZE 500
 
 //Key status
@@ -173,21 +171,6 @@ void idle(void)
     {
         if(arena.ableToMoveX(inc, arena.player.getgX(), arena.player.getgY(), arena.player.getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.player.MoveX(inc);
     }
-    
-    for(int i = 0; i < arena.enemies.size(); i++)
-    {
-        if (arena.enemies.at(i).getRightSided())
-        {
-            if(arena.ableToMoveX(inc, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.enemies.at(i).MoveX(inc);
-            else arena.enemies.at(i).setRightSided(false);
-        }
-        else
-        {
-            if(arena.ableToMoveX(-inc, arena.player.getgX(), arena.player.getgY(), arena.player.getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.enemies.at(i).MoveX(-inc);
-            else arena.enemies.at(i).setRightSided(true);
-        }
-        
-    }
 
     if(arena.player.getJumping())
     {
@@ -204,8 +187,23 @@ void idle(void)
         else arena.player.setFalling(0);
     }
     
-    //Trata o tiro (soh permite um tiro por vez)
-    //Poderia usar uma lista para tratar varios tiros
+    for(int i = 0; i < arena.enemies.size(); i++)
+    {
+        if (arena.enemies.at(i).getRightSided())
+        {
+            if(arena.ableToMoveX(inc, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(), arena.player, arena.enemies, arena.obstacles) && !arena.ableToMoveY(-incy, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.enemies.at(i).MoveX(inc);
+            else arena.enemies.at(i).MoveX(-inc);
+        }
+        else
+        {
+            if(arena.ableToMoveX(-inc, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(), arena.player, arena.enemies, arena.obstacles) && !arena.ableToMoveY(-incy, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.enemies.at(i).MoveX(-inc);
+            else arena.enemies.at(i).MoveX(inc);
+        }
+        
+    }
+
+    
+    
     if(arena.player.getShot()){
         GLfloat x_shot;
         GLfloat y_shot;
@@ -244,18 +242,7 @@ void idle(void)
     }
     
     
-    //Control animation
-    // if (animate){
-    //     static int dir = 1;
-    //     if (robo.ObtemX() > (ViewingWidth/2)){
-    //         dir *= -1;
-    //     }
-    //     else if (robo.ObtemX() < -(ViewingWidth/2)){
-    //         dir *= -1;
-    //     }
-    //     robo.MoveEmX(dir*INC_KEYIDLE);
-    // }
-    
+   
     glutPostRedisplay();
 }
  
