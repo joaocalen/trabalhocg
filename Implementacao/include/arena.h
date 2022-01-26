@@ -14,8 +14,7 @@ using namespace std;
 #define INC_KEYIDLE 0.01
 
 
-class Arena {    
-    // pensar em como representar outras classes aqui dentro, se é que vou representar nessa classe.    
+class Arena {
 private:
     void DrawObstacle(vector<Obstacle> obstacles);
     void DrawPlayer(Player player);
@@ -30,9 +29,13 @@ public:
     vector<Enemy> enemies;
     vector<Obstacle> obstacles;
     Player player;
+    bool win;
+    bool loose;
     Arena(){        
         this->width = 0; 
         this->height = 0;                
+        win = false;
+        loose = false;
     };
     void Draw(){ 
         DrawArena(width, height, centerX, centerY);
@@ -46,6 +49,7 @@ public:
     bool checkCollisionArenaBounds(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2, GLfloat radius1, GLfloat radius2);
     bool checkCollisionCharacter(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2, GLfloat radius1, GLfloat radius2);
     bool checkCollisionObstacle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2, GLfloat radius, GLfloat height, GLfloat width);
+    void destroy();
     // void Recria(GLfloat x, GLfloat y);
     // bool Atingido(Tiro *tiro);
 };

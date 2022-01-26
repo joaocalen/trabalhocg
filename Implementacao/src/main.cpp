@@ -8,6 +8,22 @@
 #include "../include/arena.h"
 #define WINDOW_SIZE 500
 
+
+// TODO:
+/*
+Finish the game if player gets shot. -> (done)
+Final messages (win or loose). -> (done).
+Fix Jump.
+Fix character moviment.
+Create win condition when the player gets in the final spot. -> (done)
+Fix camera to follow player. (done)
+Create parameters for the program (deltaTime).
+Fix IA to shoot in player direction (optional).
+Recriate the game when the "r" button is pressed. -> (done)
+Read the svg file from the terminal
+*/
+
+
 //Key status
 int keyStatus[256];
 
@@ -21,19 +37,33 @@ const GLint ViewingHeight = 500;
 
 //Controla a animacao do robo
 int animate = 0;
-int old_x = -1;
-int old_y = -1;
-//Componentes do mundo virtual sendo modelado
+int old_x = -INT_MAX;
+int old_y = -INT_MAX;
+static char str[999];
 Arena arena;
-// Robo robo; //Um rodo
-// Shot * shot = NULL; //Um tiro por vez
-// Alvo alvo(0, 200); //Um alvo por vez
+
+void RenderFinalMessage()
+{  
+    glColor3f(1.0f, 1.0f, 1.0f); 
+    glRasterPos2f(arena.player.getgX(), 0);
+    if(arena.win)
+        sprintf(str, "VITORIA!");
+    else
+        sprintf(str, "GAME OVER!");
+    char* text;    
+    text = str;
+    while (*text) {
+        glutBitmapCharacter(GLUT_BITMAP_9_BY_15, *text);
+        text++;
+    }
+    
+}
 
 void renderScene(void)
 {
      // Clear the screen.
      glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-     glClear(GL_COLOR_BUFFER_BIT);
+     glClear(GL_COLOR_BUFFER_BIT);     
     
     arena.Draw();
     
@@ -45,7 +75,10 @@ void renderScene(void)
         if (arena.enemies.at(i).getShot()) arena.enemies.at(i).getShot()->Draw();
     }
     
-     
+    if(arena.win || arena.loose)
+    {
+        RenderFinalMessage();        
+    }
     //  alvo.Desenha();
 
      glutSwapBuffers(); // Desenha the new frame of the game.
@@ -66,32 +99,13 @@ void keyPress(unsigned char key, int x, int y)
         case 'D':
              keyStatus[(int)('d')] = 1; //Using keyStatus trick
              break;
-        case 'f':
-        case 'F':
-            //  robo.RodaBraco1(-INC_KEY);   //Without keyStatus trick
-             break;
         case 'r':
         case 'R':
-            //  robo.RodaBraco1(+INC_KEY);   //Without keyStatus trick
+            arena.destroy();
+            arena.LoadComponents("/home/joaogobeti/Joao/UFES/Computacao/computacao_grafica/Trabalho_2D/Enunciado/arena_teste.svg");
              break;
-        case 'g':
-        case 'G':
-            //  robo.RodaBraco2(-INC_KEY);   //Without keyStatus trick
-             break;
-        case 't':
-        case 'T':
-            //  robo.RodaBraco2(+INC_KEY);   //Without keyStatus trick
-             break;
-        case 'h':
-        case 'H':
-            //  robo.RodaBraco3(-INC_KEY);   //Without keyStatus trick
-             break;
-        case 'y':
-        case 'Y':
-            //  robo.RodaBraco3(+INC_KEY);   //Without keyStatus trick
-             break;
-        case ' ':             
-             break;
+        // case ' ':
+        //      break;
         case 27 :
              exit(0);
     }
@@ -114,7 +128,7 @@ void ResetKeyStatus()
 
 void motion(int x, int y)
 {    
-    if (old_y == -1) old_y = y;
+    if (old_y == -INT_MAX) old_y = y;
     arena.player.setThetaArm(arena.player.getThetaArm() + 0.3*(y - old_y));
     old_y = y;
     if(fabs(arena.player.getThetaArm()) > 135) arena.player.setThetaArm(135);
@@ -162,7 +176,17 @@ void idle(void)
 {
     double inc = INC_KEYIDLE;
     double incy = 0.05;
-    //Treat keyPress
+    //Treat win/loose condition
+    if(arena.win || arena.loose){
+        // glutPostRedisplay();
+        return;
+    } 
+    glMatrixMode(GL_PROJECTION); // Select the projection matrix
+    glLoadIdentity();
+    glOrtho(arena.player.getgX() - arena.height/2, arena.player.getgX() + arena.height/2, -arena.height/2, arena.height/2,-1,1);    
+    glMatrixMode(GL_MODELVIEW); // Select the projection matrix
+    
+    // //Treat keyPress    
     if(keyStatus[(int)('a')])
     {
         if(arena.ableToMoveX(-inc, arena.player.getgX(), arena.player.getgY(), arena.player.getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.player.MoveX(-inc);
@@ -200,9 +224,7 @@ void idle(void)
             else arena.enemies.at(i).MoveX(inc);
         }
         
-    }
-
-    
+    }   
     
     if(arena.player.getShot()){
         GLfloat x_shot;

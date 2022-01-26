@@ -10,7 +10,8 @@ void Arena::LoadComponents(string svg_path){
     const char* fill;    
     svg.LoadFile(svg_path.c_str());
     main_element = svg.FirstChildElement("svg");
-    
+    this->win = false;
+    this->loose = false;
     element = main_element->FirstChildElement("rect");
     while (element != NULL){
         element->QueryDoubleAttribute("x", &cx);
@@ -98,14 +99,28 @@ void Arena::DrawEnemies(vector<Enemy> enemies)
 
 bool Arena::ableToMoveX(GLfloat dx, GLfloat x, GLfloat y, GLfloat radius, Player player, vector<Enemy> enemies, vector<Obstacle> obstacles)
 {
-    if(checkCollisionArenaBounds(x + dx, 0, -this->width/2, 0, radius/2, 0) || checkCollisionArenaBounds(x + dx, 0, this->width/2, 0, radius/2, 0)) return false;
+    if(checkCollisionArenaBounds(x + dx, 0, this->width/2, 0, radius/2, 0))
+    {
+        if(x == player.getgX() && y == player.getgY())
+            win = true;
+        return false;
+    }
+    if(checkCollisionArenaBounds(x + dx, 0, -this->width/2, 0, radius/2, 0))
+    {
+        return false;
+    } 
     for(Obstacle o : obstacles)
     {
         GLfloat oX, oY;
         o.GetPos(oX,oY);
         if(checkCollisionObstacle(x + dx, y, oX, oY, radius, o.GetHeight(), o.GetWidth())) return false;
     }
-    if((x != player.getgX() || y != player.getgY()) && checkCollisionCharacter(x + dx, y, player.getgX(), player.getgY(), radius/2, player.getgRadius()/2)) return false;    
+    if((x != player.getgX() || y != player.getgY()) && checkCollisionCharacter(x + dx, y, player.getgX(), player.getgY(), radius/2, player.getgRadius()/2)){
+        if(dx == 0){
+            loose = true;
+        }
+        return false;
+    } 
     
     int i = 0;
     for(Enemy e : enemies)
@@ -124,15 +139,21 @@ bool Arena::ableToMoveX(GLfloat dx, GLfloat x, GLfloat y, GLfloat radius, Player
 
 bool Arena::ableToMoveY(GLfloat dy, GLfloat x, GLfloat y, GLfloat radius, Player player, vector<Enemy> enemies, vector<Obstacle> obstacles)
 {
-    // cout << "dy: " << dy << "; x: " << x << "; y: " << y << "; r: " << radius << endl;
     if(checkCollisionArenaBounds(0, y + dy, 0, -this->height/2, radius, 0) || checkCollisionArenaBounds(0, y + dy, 0, this->height/2, radius, 0)) return false;    
     for(Obstacle o : obstacles)
     {
         GLfloat oX, oY;
         o.GetPos(oX,oY);
-        if(checkCollisionObstacle(x, y + dy, oX, oY, radius, o.GetHeight(),o.GetWidth())){ cout << "oi" << endl;return false;}
+        if(checkCollisionObstacle(x, y + dy, oX, oY, radius, o.GetHeight(),o.GetWidth())) return false;
     }
-    if((x != player.getgX() || y != player.getgY()) && checkCollisionCharacter(x, y + dy, player.getgX(), player.getgY(), radius, player.getgRadius())) return false;    
+    if((x != player.getgX() || y != player.getgY()) && checkCollisionCharacter(x, y + dy, player.getgX(), player.getgY(), radius, player.getgRadius()))
+    {
+        if(dy == 0)
+        {
+            loose = true;
+        }
+        return false;
+    }    
     int i = 0;
     for(Enemy e : enemies)
     {
@@ -162,3 +183,10 @@ bool Arena::checkCollisionObstacle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y
     if(((x1 +radius/2) > (x2 - width/2) && ((x1 - radius/2) < x2 + width/2)) && (y1 + radius +radius/8 > y2  && y1 - radius < y2 + height)) return true;
     return false;
 }
+
+void Arena::destroy()
+{
+    enemies.clear();
+    obstacles.clear();    
+}
+
