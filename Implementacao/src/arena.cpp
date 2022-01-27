@@ -1,13 +1,13 @@
 #include "../include/arena.h"
 #include <iostream>
 
-void Arena::LoadComponents(string svg_path){
+void Arena::LoadComponents(){
     
     tinyxml2::XMLDocument svg;
     tinyxml2::XMLNode* main_element;
     tinyxml2::XMLElement* element;
     double cx, cy, r, width, height;
-    const char* fill;    
+    const char* fill;
     svg.LoadFile(svg_path.c_str());
     main_element = svg.FirstChildElement("svg");
     this->win = false;

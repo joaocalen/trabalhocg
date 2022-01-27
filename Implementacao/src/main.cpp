@@ -102,7 +102,7 @@ void keyPress(unsigned char key, int x, int y)
         case 'r':
         case 'R':
             arena.destroy();
-            arena.LoadComponents("/home/joaogobeti/Joao/UFES/Computacao/computacao_grafica/Trabalho_2D/Enunciado/arena_teste.svg");
+            arena.LoadComponents();
              break;
         // case ' ':
         //      break;
@@ -197,17 +197,17 @@ void idle(void)
     // //Treat keyPress    
     if(keyStatus[(int)('a')])
     {
-        if(arena.ableToMoveX(-inc, arena.player.getgX(), arena.player.getgY(), arena.player.getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.player.MoveX(-inc, deltaTime);
+        if(arena.ableToMoveX(-inc*deltaTime, arena.player.getgX(), arena.player.getgY(), arena.player.getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.player.MoveX(-inc, deltaTime);
     }
     if(keyStatus[(int)('d')])
     {
-        if(arena.ableToMoveX(inc, arena.player.getgX(), arena.player.getgY(), arena.player.getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.player.MoveX(inc, deltaTime);
+        if(arena.ableToMoveX(inc*deltaTime, arena.player.getgX(), arena.player.getgY(), arena.player.getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.player.MoveX(inc, deltaTime);
     }
 
     if(arena.player.getJumping())
     {
         arena.player.setAbleToJump(0);
-        if(arena.ableToMoveY(incy, arena.player.getgX(), arena.player.getgY(), arena.player.getgRadius(),arena.player, arena.enemies, arena.obstacles) && arena.player.getgY() < arena.player.getYIniJump() + arena.player.getgRadius()*6)
+        if(arena.ableToMoveY(incy*deltaTime, arena.player.getgX(), arena.player.getgY(), arena.player.getgRadius(),arena.player, arena.enemies, arena.obstacles) && arena.player.getgY() < arena.player.getYIniJump() + arena.player.getgRadius()*6)
         {
             arena.player.MoveY(incy, deltaTime);
             // arena.player.setJumping(0);
@@ -222,7 +222,7 @@ void idle(void)
     }
     if(arena.player.getFalling())
     {
-        if(arena.ableToMoveY(-incy, arena.player.getgX(), arena.player.getgY(), arena.player.getgRadius(),arena.player, arena.enemies, arena.obstacles))
+        if(arena.ableToMoveY(-incy*deltaTime, arena.player.getgX(), arena.player.getgY(), arena.player.getgRadius(),arena.player, arena.enemies, arena.obstacles))
         {
             arena.player.MoveY(-incy, deltaTime);
             arena.player.setAbleToJump(0);
@@ -238,12 +238,12 @@ void idle(void)
     {
         if (arena.enemies.at(i).getRightSided())
         {
-            if(arena.ableToMoveX(inc, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(), arena.player, arena.enemies, arena.obstacles) && !arena.ableToMoveY(-incy, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.enemies.at(i).MoveX(inc, deltaTime);
+            if(arena.ableToMoveX(inc*deltaTime, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(), arena.player, arena.enemies, arena.obstacles) && !arena.ableToMoveY(-incy*deltaTime, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.enemies.at(i).MoveX(inc, deltaTime);
             else arena.enemies.at(i).MoveX(-inc, deltaTime);
         }
         else
         {
-            if(arena.ableToMoveX(-inc, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(), arena.player, arena.enemies, arena.obstacles) && !arena.ableToMoveY(-incy, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.enemies.at(i).MoveX(-inc, deltaTime);
+            if(arena.ableToMoveX(-inc*deltaTime, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(), arena.player, arena.enemies, arena.obstacles) && !arena.ableToMoveY(-incy*deltaTime, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.enemies.at(i).MoveX(-inc, deltaTime);
             else arena.enemies.at(i).MoveX(inc, deltaTime);
         }
         
@@ -292,8 +292,14 @@ void idle(void)
 }
  
 int main(int argc, char *argv[])
-{    
-    arena.LoadComponents("/home/joaogobeti/Joao/UFES/Computacao/computacao_grafica/Trabalho_2D/Enunciado/arena_teste.svg");
+{   
+    if (argc <= 1){
+        cout << "Erro, por favor insira o caminho completo do arquivo" << endl;
+        return 0;
+    }else{
+        arena.svg_path = argv[argc-1];
+        arena.LoadComponents();
+    }
     // Initialize openGL with Double buffer and RGB color without transparency.
     // Its interesting to try GLUT_SINGLE instead of GLUT_DOUBLE.
     glutInit(&argc, argv);

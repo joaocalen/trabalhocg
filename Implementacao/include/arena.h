@@ -29,6 +29,7 @@ public:
     vector<Enemy> enemies;
     vector<Obstacle> obstacles;
     Player player;
+    string svg_path;
     bool win;
     bool loose;
     Arena(){        
@@ -43,7 +44,7 @@ public:
         DrawPlayer(player);
         DrawEnemies(enemies);        
     };
-    void LoadComponents(string svg_path);
+    void LoadComponents();
     bool ableToMoveX(GLfloat dx, GLfloat x, GLfloat y, GLfloat radius, Player player, vector<Enemy> others, vector<Obstacle> obstacles);
     bool ableToMoveY(GLfloat dy, GLfloat x, GLfloat y, GLfloat radius, Player player, vector<Enemy> others, vector<Obstacle> obstacles);
     bool checkCollisionArenaBounds(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2, GLfloat radius1, GLfloat radius2);
