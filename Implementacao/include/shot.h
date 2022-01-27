@@ -15,13 +15,13 @@ private:
     void DrawCircle(GLfloat radius, GLfloat R, GLfloat G, GLfloat B);
     void DrawShot(GLfloat x, GLfloat y);
 public:
-    Shot(GLfloat x, GLfloat y, GLfloat directionAng){
+    Shot(GLfloat x, GLfloat y, GLfloat directionAng, GLfloat gVel){
         gXInit = x; 
         gYInit = y; 
         gX = x; 
         gY = y; 
         gDirectionAng = directionAng; 
-        gVel = 0.06;
+        this-> gVel = gVel;
     };
     void Draw(){ 
         DrawShot(gX, gY);

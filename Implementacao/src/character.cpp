@@ -128,9 +128,9 @@ void Character::deleteShot()
 Shot* Character::Shoot()
 {
     if(right_sided)
-        shot = new Shot(gX + 2*gRadius/3, gY, -thetaArm);
+        shot = new Shot(gX + 2*gRadius/3, gY, -thetaArm, gVel*2/100);
     else
-        shot = new Shot(gX - 2*gRadius/3, gY , thetaArm);
+        shot = new Shot(gX - 2*gRadius/3, gY , thetaArm, gVel*2/100);
 }
 
 GLfloat Character::getgX()
