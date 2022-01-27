@@ -13,11 +13,11 @@ public:
     void Draw(){ 
        Character::Draw(gX, gY, gRadius, 1,0,0);
     };
-    void MoveX(GLfloat dx){
-        Character::MoveX(dx);
+    void MoveX(GLfloat dx, GLdouble deltaTime){
+        Character::MoveX(dx, deltaTime);
     }
-    void MoveY(GLfloat dy){
-        Character::MoveY(dy);
+    void MoveY(GLfloat dy, GLdouble deltaTime){
+        Character::MoveY(dy, deltaTime);
     }
     Shot* Shoot(){Character::Shoot();};
     Shot* getShot(){Character::getShot();};

@@ -38,8 +38,8 @@ public:
     void Draw(GLfloat x,GLfloat y, GLfloat radius, GLfloat R, GLfloat G, GLfloat B){ 
         DrawCharacter(x, y, radius, R, G, B);
     };
-    void MoveX(GLfloat dx);
-    void MoveY(GLfloat dy);
+    void MoveX(GLfloat dx, GLdouble deltaTime);
+    void MoveY(GLfloat dy, GLdouble deltaTime);
     Shot* Shoot();
     void GetPos(GLfloat &xOut, GLfloat &yOut){
         xOut = gX;

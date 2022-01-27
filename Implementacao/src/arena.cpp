@@ -47,9 +47,9 @@ void Arena::LoadComponents(string svg_path){
             this->player.setgX(cx);
             this->player.setgY(-cy);
             this->player.setgRadius(r);
-            this->player.setgVel(1.0);
+            this->player.setgVel(3.0);
         } else if(!strcmp("red",fill)){
-            Enemy enemy(cx,-cy,r,1.0);
+            Enemy enemy(cx,-cy,r,3.0);
             this->enemies.push_back(enemy);
         } else{
             cout <<"Erro inesperado! " << endl;
@@ -59,7 +59,7 @@ void Arena::LoadComponents(string svg_path){
     for(int i = 0; i < this->enemies.size();i++){
         while(ableToMoveY(-INC_KEYIDLE, this->enemies.at(i).getgX(), this->enemies.at(i).getgY(), this->enemies.at(i).getgRadius(), this->player, this->enemies, this->obstacles))
         {
-            this->enemies.at(i).MoveY(-INC_KEYIDLE);
+            this->enemies.at(i).MoveY(-INC_KEYIDLE, 1);
         }
     }       
 }

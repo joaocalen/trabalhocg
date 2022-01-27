@@ -21,12 +21,12 @@ public:
         gX = x; 
         gY = y; 
         gDirectionAng = directionAng; 
-        gVel = 0.02;
+        gVel = 0.06;
     };
     void Draw(){ 
         DrawShot(gX, gY);
     };
-    void Move();
+    void Move(GLdouble deltaTime);
     bool Valid();
     void GetPos(GLfloat &xOut, GLfloat &yOut){
         xOut = gX;

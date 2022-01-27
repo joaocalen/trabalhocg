@@ -20,10 +20,10 @@ void Shot::DrawShot(GLfloat x, GLfloat y)
     glPopMatrix();
 }
 
-void Shot::Move()
+void Shot::Move(GLdouble deltaTime)
 {
-    gX += gVel * sin(-gDirectionAng * M_PI / 180);
-    gY += gVel * cos(-gDirectionAng * M_PI/180);
+    gX += gVel * sin(-gDirectionAng * M_PI / 180) * deltaTime;
+    gY += gVel * cos(-gDirectionAng * M_PI/180) * deltaTime;
 }
 
 bool Shot::Valid()

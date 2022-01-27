@@ -107,16 +107,16 @@ void Character::DrawCharacter(GLfloat x, GLfloat y, GLfloat radius, GLfloat R, G
     glPopMatrix();
 }
 
-void Character::MoveX(GLfloat dx)
+void Character::MoveX(GLfloat dx, GLdouble deltaTime)
 {
     if(dx > 0) this->right_sided = true;
     else this->right_sided = false;
-    this -> gX += dx;
+    this -> gX += dx * deltaTime;
 }
 
-void Character::MoveY(GLfloat dy)
+void Character::MoveY(GLfloat dy, GLdouble deltaTime)
 {
-    this -> gY += dy;
+    this -> gY += dy * deltaTime;
 }
 
 void Character::deleteShot()

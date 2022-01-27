@@ -13,11 +13,11 @@
 /*
 Finish the game if player gets shot. -> (done)
 Final messages (win or loose). -> (done).
-Fix Jump.
+Fix Jump. -> (almost done)
 Fix character moviment.
 Create win condition when the player gets in the final spot. -> (done)
 Fix camera to follow player. (done)
-Create parameters for the program (deltaTime).
+Create parameters for the program (deltaTime). -> (done)
 Fix IA to shoot in player direction (optional).
 Recriate the game when the "r" button is pressed. -> (done)
 Read the svg file from the terminal
@@ -158,11 +158,14 @@ void mouseclick(int button, int state, int x, int y)
     if(button == GLUT_RIGHT_BUTTON){
         if(state == GLUT_DOWN)
         {
-            arena.player.setJumping(0);
-            arena.player.setFalling(1);
+            if(arena.player.getAbleToJump()){
+                arena.player.setYIniJump(arena.player.getgY());                
+                arena.player.setJumping(1);  
+            }          
         }else
         {
-            arena.player.setJumping(1);            
+            arena.player.setJumping(0);
+            arena.player.setFalling(1);            
         }
     }
     if (button == GLUT_LEFT_BUTTON && state != GLUT_DOWN)
@@ -174,8 +177,13 @@ void mouseclick(int button, int state, int x, int y)
 
 void idle(void)
 {
-    double inc = INC_KEYIDLE;
-    double incy = 0.05;
+    static GLdouble prevTime = glutGet(GLUT_ELAPSED_TIME);
+    GLdouble curTime, deltaTime;
+    curTime = glutGet(GLUT_ELAPSED_TIME);
+    deltaTime = curTime - prevTime;
+    prevTime = curTime;
+    double inc = INC_KEYIDLE * arena.player.getgVel();
+    double incy = INC_KEYIDLE * arena.player.getgVel();
     //Treat win/loose condition
     if(arena.win || arena.loose){
         // glutPostRedisplay();
@@ -189,39 +197,54 @@ void idle(void)
     // //Treat keyPress    
     if(keyStatus[(int)('a')])
     {
-        if(arena.ableToMoveX(-inc, arena.player.getgX(), arena.player.getgY(), arena.player.getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.player.MoveX(-inc);
+        if(arena.ableToMoveX(-inc, arena.player.getgX(), arena.player.getgY(), arena.player.getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.player.MoveX(-inc, deltaTime);
     }
     if(keyStatus[(int)('d')])
     {
-        if(arena.ableToMoveX(inc, arena.player.getgX(), arena.player.getgY(), arena.player.getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.player.MoveX(inc);
+        if(arena.ableToMoveX(inc, arena.player.getgX(), arena.player.getgY(), arena.player.getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.player.MoveX(inc, deltaTime);
     }
 
     if(arena.player.getJumping())
     {
-        if(arena.ableToMoveY(-incy, arena.player.getgX(), arena.player.getgY(), arena.player.getgRadius(),arena.player, arena.enemies, arena.obstacles))
+        arena.player.setAbleToJump(0);
+        if(arena.ableToMoveY(incy, arena.player.getgX(), arena.player.getgY(), arena.player.getgRadius(),arena.player, arena.enemies, arena.obstacles) && arena.player.getgY() < arena.player.getYIniJump() + arena.player.getgRadius()*6)
         {
-            arena.player.MoveY(-incy);
+            arena.player.MoveY(incy, deltaTime);
             // arena.player.setJumping(0);
             arena.player.setFalling(0);
+        }
+        else
+        {
+            arena.player.setJumping(0);
+            arena.player.setAbleToJump(0);
+            arena.player.setFalling(1);
         }
     }
     if(arena.player.getFalling())
     {
-        if(arena.ableToMoveY(incy, arena.player.getgX(), arena.player.getgY(), arena.player.getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.player.MoveY(incy);
-        else arena.player.setFalling(0);
+        if(arena.ableToMoveY(-incy, arena.player.getgX(), arena.player.getgY(), arena.player.getgRadius(),arena.player, arena.enemies, arena.obstacles))
+        {
+            arena.player.MoveY(-incy, deltaTime);
+            arena.player.setAbleToJump(0);
+        } 
+        else
+        {
+            arena.player.setFalling(1);
+            arena.player.setAbleToJump(1);
+        }
     }
     
     for(int i = 0; i < arena.enemies.size(); i++)
     {
         if (arena.enemies.at(i).getRightSided())
         {
-            if(arena.ableToMoveX(inc, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(), arena.player, arena.enemies, arena.obstacles) && !arena.ableToMoveY(-incy, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.enemies.at(i).MoveX(inc);
-            else arena.enemies.at(i).MoveX(-inc);
+            if(arena.ableToMoveX(inc, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(), arena.player, arena.enemies, arena.obstacles) && !arena.ableToMoveY(-incy, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.enemies.at(i).MoveX(inc, deltaTime);
+            else arena.enemies.at(i).MoveX(-inc, deltaTime);
         }
         else
         {
-            if(arena.ableToMoveX(-inc, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(), arena.player, arena.enemies, arena.obstacles) && !arena.ableToMoveY(-incy, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.enemies.at(i).MoveX(-inc);
-            else arena.enemies.at(i).MoveX(inc);
+            if(arena.ableToMoveX(-inc, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(), arena.player, arena.enemies, arena.obstacles) && !arena.ableToMoveY(-incy, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.enemies.at(i).MoveX(-inc, deltaTime);
+            else arena.enemies.at(i).MoveX(inc, deltaTime);
         }
         
     }   
@@ -231,7 +254,7 @@ void idle(void)
         GLfloat y_shot;
         arena.player.getShot()->GetPos(x_shot,y_shot);
 
-        arena.player.getShot()->Move();        
+        arena.player.getShot()->Move(deltaTime);        
 
         if (!arena.player.getShot()->Valid()){ 
             arena.player.deleteShot();
@@ -249,7 +272,7 @@ void idle(void)
             GLfloat y_shot;
             arena.enemies.at(i).getShot()->GetPos(x_shot,y_shot);
 
-            arena.enemies.at(i).getShot()->Move();
+            arena.enemies.at(i).getShot()->Move(deltaTime);
             if (!arena.enemies.at(i).getShot()->Valid()){ 
                 arena.enemies.at(i).deleteShot();
             }
