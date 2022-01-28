@@ -140,18 +140,14 @@ void Character::MoveY(GLfloat dy, GLdouble deltaTime)
     this -> gY += dy * deltaTime;
 }
 
-void Character::deleteShot()
-{
-    delete shot;
-    shot = NULL;
-}
-
 Shot* Character::Shoot()
 {
+    Shot* shot;
     if(right_sided)
         shot = new Shot(gX + 2*gRadius/3, gY, -thetaArm, gVel*2/100);
     else
         shot = new Shot(gX - 2*gRadius/3, gY , thetaArm, gVel*2/100);
+    return shot;
 }
 
 GLfloat Character::getgX()
@@ -174,10 +170,6 @@ GLfloat Character::getgVel()
 GLfloat Character::getThetaArm()
 {
     return this->thetaArm;
-}
-Shot* Character::getShot()
-{
-    return shot;
 }
 GLfloat Character::setThetaArm(GLfloat thetaArm)
 {

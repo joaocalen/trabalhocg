@@ -40,6 +40,8 @@ int ia = 1;
 int old_x = -INT_MAX;
 int old_y = -INT_MAX;
 static char str[999];
+bool availableToShoot = true;
+bool camera = true;
 Arena arena;
 
 void RenderFinalMessage()
@@ -66,15 +68,11 @@ void renderScene(void)
      glClear(GL_COLOR_BUFFER_BIT);     
     
     arena.Draw();
-    
-     
-    if (arena.player.getShot()) arena.player.getShot()->Draw();
-    
-    for (int i = 0; i < arena.enemies.size(); i++)
+
+    for(Shot* s : arena.shots)
     {
-        if (arena.enemies.at(i).getShot()) arena.enemies.at(i).getShot()->Draw();
-    }
-    
+        s->Draw();
+    }    
     if(arena.win || arena.loose)
     {
         RenderFinalMessage();        
@@ -90,6 +88,9 @@ void keyPress(unsigned char key, int x, int y)
     {
         case '1':
              ia = !ia;
+             break;
+        case '2':
+             camera = !camera;
              break;
         case 'a':
         case 'A':
@@ -171,8 +172,8 @@ void mouseclick(int button, int state, int x, int y)
     }
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
     {
-        if (!arena.player.getShot())
-            arena.player.Shoot();
+            if(availableToShoot)
+                arena.shots.push_back(arena.player.Shoot());
     }
 }
 
@@ -183,30 +184,31 @@ void idle(void)
     curTime = glutGet(GLUT_ELAPSED_TIME);
     deltaTime = curTime - prevTime;
     prevTime = curTime;
+    static GLdouble timeToShoot = 0;
     double inc = INC_KEYIDLE * arena.player.getgVel();
     double incy = INC_KEYIDLE * arena.player.getgVel();
     //Treat win/loose condition
-    if(arena.win || arena.loose){
-        // glutPostRedisplay();
+    if(arena.win || arena.loose){        
         return;
-    } 
-    glMatrixMode(GL_PROJECTION); // Select the projection matrix
-    glLoadIdentity();
-    glOrtho(arena.player.getgX() - arena.height/2, arena.player.getgX() + arena.height/2, -arena.height/2, arena.height/2,-1,1);    
-    glMatrixMode(GL_MODELVIEW); // Select the projection matrix
+    }
     
-    // //Treat keyPress
-     if(keyStatus[(int)(' ')])
-    {
-        if(arena.player.getAbleToJump()){
-            arena.player.setYIniJump(arena.player.getgY());                
-            arena.player.setJumping(1);  
-        }          
-    }else
-    {
-        arena.player.setJumping(0);
-        arena.player.setFalling(1);            
-    }    
+    // Camera
+    if (camera){
+        glMatrixMode(GL_PROJECTION); 
+        glLoadIdentity();
+        glOrtho(arena.player.getgX() - arena.height/2, arena.player.getgX() + arena.height/2, -arena.height/2, arena.height/2,-1,1);    
+        glMatrixMode(GL_MODELVIEW); 
+    } else{
+        glMatrixMode(GL_PROJECTION); 
+        glLoadIdentity();
+        glOrtho(-(ViewingWidth/2),     // X coordinate of left edge          
+            (ViewingWidth/2),     // X coordinate of right edge         
+            -(ViewingHeight/2),     // Y coordinate of bottom edge        
+            (ViewingHeight/2),-1,1);    
+        glMatrixMode(GL_MODELVIEW); 
+    }
+
+    
     if(keyStatus[(int)('a')])
     {
         if(arena.ableToMoveX(-inc*deltaTime, arena.player.getgX(), arena.player.getgY(), arena.player.getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.player.MoveX(-inc, deltaTime, arena.player.getJumping());
@@ -244,7 +246,7 @@ void idle(void)
             arena.player.setFalling(1);
             arena.player.setAbleToJump(1);
         }
-    }
+    }    
     if(ia){
         for(int i = 0; i < arena.enemies.size(); i++)
         {
@@ -261,44 +263,51 @@ void idle(void)
             
         }   
     }
-    if(arena.player.getShot()){
+    
+    for(int i = 0; i < arena.shots.size(); i++)
+    {
         GLfloat x_shot;
         GLfloat y_shot;
-        arena.player.getShot()->GetPos(x_shot,y_shot);
-
-        arena.player.getShot()->Move(deltaTime);        
-
-        if (!arena.player.getShot()->Valid()){ 
-            arena.player.deleteShot();
-        }
+        arena.shots.at(i) -> GetPos(x_shot,y_shot);
+        arena.shots.at(i) -> Move(deltaTime);
+        // if(!s->Valid())
+        // {
+        //     arena.shots.erase(arena.shots.begin() + aux);
+        //     free(s);
+        // }
         if (!arena.ableToMoveY(0, x_shot, y_shot, 0.3, arena.player, arena.enemies, arena.obstacles) || !arena.ableToMoveX(0, x_shot, y_shot, 0.3, arena.player, arena.enemies, arena.obstacles))
         {
-            arena.player.deleteShot();
-        }
+            free(arena.shots.at(i));
+            arena.shots.erase(arena.shots.begin() + i);            
+        }    
     }
+    // if(arena.player.getShot()){
+    //     GLfloat x_shot;
+    //     GLfloat y_shot;
+    //     arena.player.getShot()->GetPos(x_shot,y_shot);
+
+    //     arena.player.getShot()->Move(deltaTime);        
+
+    //     if (!arena.player.getShot()->Valid()){ 
+    //         arena.player.deleteShot();
+    //     }
+    //     if (!arena.ableToMoveY(0, x_shot, y_shot, 0.3, arena.player, arena.enemies, arena.obstacles) || !arena.ableToMoveX(0, x_shot, y_shot, 0.3, arena.player, arena.enemies, arena.obstacles))
+    //     {
+    //         arena.player.deleteShot();
+    //     }
+    // }
     if(ia){
         for(int i = 0; i < arena.enemies.size(); i++)
         {
-            if(arena.enemies.at(i).getShot()){
-                GLfloat x_shot;
-                GLfloat y_shot;
-                arena.enemies.at(i).getShot()->GetPos(x_shot,y_shot);
-
-                arena.enemies.at(i).getShot()->Move(deltaTime);
-                if (!arena.enemies.at(i).getShot()->Valid()){ 
-                    arena.enemies.at(i).deleteShot();
-                }
-                if (!arena.ableToMoveY(0, x_shot, y_shot, 0.3, arena.player, arena.enemies, arena.obstacles) || !arena.ableToMoveX(0, x_shot, y_shot, 0.3, arena.player, arena.enemies, arena.obstacles))
-                {
-                    arena.enemies.at(i).deleteShot();
-                }
+            if(timeToShoot == 0)
+            {
+                arena.shots.push_back(arena.enemies.at(i).Shoot());
             }
-            else{
-                arena.enemies.at(i).Shoot();
-            }        
         }
     }
-    
+    timeToShoot += deltaTime;
+    if(timeToShoot > 1000)
+        timeToShoot = 0;   
    
     glutPostRedisplay();
 }

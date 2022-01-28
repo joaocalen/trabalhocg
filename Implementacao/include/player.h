@@ -42,8 +42,7 @@ public:
     GLfloat getgY(){Character::getgY();};
     GLfloat getgRadius(){Character::getgRadius();};
     GLfloat getgVel(){Character::getgVel();};
-    GLfloat getThetaArm(){Character::getThetaArm();};
-    Shot* getShot(){Character::getShot();};
+    GLfloat getThetaArm(){Character::getThetaArm();};    
     void deleteShot(){Character::deleteShot();};
     GLfloat setThetaArm(GLfloat theta){Character::setThetaArm(theta);};
     bool getJumping();

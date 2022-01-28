@@ -183,6 +183,7 @@ bool Arena::checkCollisionObstacle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y
 void Arena::destroy()
 {
     enemies.clear();
-    obstacles.clear();    
+    obstacles.clear();
+    shots.clear();
 }
 

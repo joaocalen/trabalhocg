@@ -26,8 +26,7 @@ public:
     GLfloat thetaArm;
     GLfloat thetaLeg;
     bool right_sided;
-    bool thetaLegIncreasing;
-    Shot* shot;
+    bool thetaLegIncreasing;    
     Character(GLfloat gX, GLfloat gY, GLfloat gRadius, GLfloat gVel){
         this->gX = gX;
         this->gY = gY;
@@ -36,8 +35,7 @@ public:
         this->thetaLeg = 0;
         this->thetaLegIncreasing = true;
         this->gVel = gVel;
-        this->right_sided = true;
-        shot = NULL;
+        this->right_sided = true;        
     };
     void Draw(GLfloat x,GLfloat y, GLfloat radius, GLfloat R, GLfloat G, GLfloat B){ 
         DrawCharacter(x, y, radius, R, G, B);
@@ -54,8 +52,7 @@ public:
     GLfloat getgY();
     GLfloat getgRadius();
     GLfloat getgVel();
-    GLfloat getThetaArm();
-    Shot* getShot();
+    GLfloat getThetaArm();    
     GLfloat setThetaArm(GLfloat thetaArm);
     bool getRightSided();
     void setRightSided(bool right_sided);

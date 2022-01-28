@@ -28,6 +28,7 @@ public:
     GLfloat centerY;
     vector<Enemy> enemies;
     vector<Obstacle> obstacles;
+    vector<Shot*> shots;
     Player player;
     string svg_path;
     bool win;

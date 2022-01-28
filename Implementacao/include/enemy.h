@@ -19,8 +19,7 @@ public:
     void MoveY(GLfloat dy, GLdouble deltaTime){
         Character::MoveY(dy, deltaTime);
     }
-    Shot* Shoot(){Character::Shoot();};
-    Shot* getShot(){Character::getShot();};
+    Shot* Shoot(){Character::Shoot();};    
     void deleteShot(){Character::deleteShot();};
     GLfloat getgX(){Character::getgX();};
     GLfloat getgY(){Character::getgY();};
