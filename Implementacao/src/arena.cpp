@@ -99,16 +99,12 @@ void Arena::DrawEnemies(vector<Enemy> enemies)
 
 bool Arena::ableToMoveX(GLfloat dx, GLfloat x, GLfloat y, GLfloat radius, Player player, vector<Enemy> enemies, vector<Obstacle> obstacles)
 {
-    if(checkCollisionArenaBounds(x + dx, 0, this->width/2, 0, radius/2, 0))
+    if(checkCollisionArenaBounds(x + dx, y, radius))
     {
-        if(x == player.getgX() && y == player.getgY())
+        if(x == player.getgX() && y == player.getgY() && x + dx + radius > this->width/2)
             win = true;
         return false;
-    }
-    if(checkCollisionArenaBounds(x + dx, 0, -this->width/2, 0, radius/2, 0))
-    {
-        return false;
-    } 
+    }     
     for(Obstacle o : obstacles)
     {
         GLfloat oX, oY;
@@ -139,7 +135,7 @@ bool Arena::ableToMoveX(GLfloat dx, GLfloat x, GLfloat y, GLfloat radius, Player
 
 bool Arena::ableToMoveY(GLfloat dy, GLfloat x, GLfloat y, GLfloat radius, Player player, vector<Enemy> enemies, vector<Obstacle> obstacles)
 {
-    if(checkCollisionArenaBounds(0, y + dy, 0, -this->height/2, radius, 0) || checkCollisionArenaBounds(0, y + dy, 0, this->height/2, radius, 0)) return false;    
+    if(checkCollisionArenaBounds(x, y + dy, radius)) return false;    
     for(Obstacle o : obstacles)
     {
         GLfloat oX, oY;
@@ -168,9 +164,9 @@ bool Arena::ableToMoveY(GLfloat dy, GLfloat x, GLfloat y, GLfloat radius, Player
     return true;
 }
 
-bool Arena::checkCollisionArenaBounds(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2, GLfloat radius1, GLfloat radius2)
+bool Arena::checkCollisionArenaBounds(GLfloat x1, GLfloat y1, GLfloat radius1)
 {
-    return sqrt(pow(x1-x2,2) + pow(y1-y2,2)) < radius1+radius2;
+    return (x1 - radius1/2 < -this->width/2 || x1 + radius1/2 > this->width/2 || y1 -radius1 < -this->height/2 || y1 +radius1 > this->height/2);
 }
 bool Arena::checkCollisionCharacter(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2, GLfloat radius1, GLfloat radius2)
 {

@@ -47,7 +47,7 @@ public:
     void LoadComponents();
     bool ableToMoveX(GLfloat dx, GLfloat x, GLfloat y, GLfloat radius, Player player, vector<Enemy> others, vector<Obstacle> obstacles);
     bool ableToMoveY(GLfloat dy, GLfloat x, GLfloat y, GLfloat radius, Player player, vector<Enemy> others, vector<Obstacle> obstacles);
-    bool checkCollisionArenaBounds(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2, GLfloat radius1, GLfloat radius2);
+    bool checkCollisionArenaBounds(GLfloat x1, GLfloat y1, GLfloat radius1);
     bool checkCollisionCharacter(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2, GLfloat radius1, GLfloat radius2);
     bool checkCollisionObstacle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2, GLfloat radius, GLfloat height, GLfloat width);
     void destroy();

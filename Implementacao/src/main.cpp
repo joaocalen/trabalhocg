@@ -104,8 +104,9 @@ void keyPress(unsigned char key, int x, int y)
             arena.destroy();
             arena.LoadComponents();
              break;
-        // case ' ':
-        //      break;
+        case ' ':
+        keyStatus[(int)(' ')] = 1; //Using keyStatus trick
+             break;
         case 27 :
              exit(0);
     }
@@ -168,7 +169,7 @@ void mouseclick(int button, int state, int x, int y)
             arena.player.setFalling(1);            
         }
     }
-    if (button == GLUT_LEFT_BUTTON && state != GLUT_DOWN)
+    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
     {
         if (!arena.player.getShot())
             arena.player.Shoot();
@@ -194,7 +195,18 @@ void idle(void)
     glOrtho(arena.player.getgX() - arena.height/2, arena.player.getgX() + arena.height/2, -arena.height/2, arena.height/2,-1,1);    
     glMatrixMode(GL_MODELVIEW); // Select the projection matrix
     
-    // //Treat keyPress    
+    // //Treat keyPress
+     if(keyStatus[(int)(' ')])
+    {
+        if(arena.player.getAbleToJump()){
+            arena.player.setYIniJump(arena.player.getgY());                
+            arena.player.setJumping(1);  
+        }          
+    }else
+    {
+        arena.player.setJumping(0);
+        arena.player.setFalling(1);            
+    }    
     if(keyStatus[(int)('a')])
     {
         if(arena.ableToMoveX(-inc*deltaTime, arena.player.getgX(), arena.player.getgY(), arena.player.getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.player.MoveX(-inc, deltaTime);
@@ -202,7 +214,7 @@ void idle(void)
     if(keyStatus[(int)('d')])
     {
         if(arena.ableToMoveX(inc*deltaTime, arena.player.getgX(), arena.player.getgY(), arena.player.getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.player.MoveX(inc, deltaTime);
-    }
+    }   
 
     if(arena.player.getJumping())
     {
@@ -238,12 +250,12 @@ void idle(void)
     {
         if (arena.enemies.at(i).getRightSided())
         {
-            if(arena.ableToMoveX(inc*deltaTime, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(), arena.player, arena.enemies, arena.obstacles) && !arena.ableToMoveY(-incy*deltaTime, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.enemies.at(i).MoveX(inc, deltaTime);
+            if(arena.ableToMoveX(inc*deltaTime, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(), arena.player, arena.enemies, arena.obstacles) && !arena.ableToMoveY(-incy, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.enemies.at(i).MoveX(inc, deltaTime);
             else arena.enemies.at(i).MoveX(-inc, deltaTime);
         }
         else
         {
-            if(arena.ableToMoveX(-inc*deltaTime, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(), arena.player, arena.enemies, arena.obstacles) && !arena.ableToMoveY(-incy*deltaTime, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.enemies.at(i).MoveX(-inc, deltaTime);
+            if(arena.ableToMoveX(-inc*deltaTime, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(), arena.player, arena.enemies, arena.obstacles) && !arena.ableToMoveY(-incy, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.enemies.at(i).MoveX(-inc, deltaTime);
             else arena.enemies.at(i).MoveX(inc, deltaTime);
         }
         
