@@ -13,8 +13,8 @@ public:
     void Draw(){ 
        Character::Draw(gX, gY, gRadius, 1,0,0);
     };
-    void MoveX(GLfloat dx, GLdouble deltaTime){
-        Character::MoveX(dx, deltaTime);
+    void MoveX(GLfloat dx, GLdouble deltaTime, bool jumping){
+        Character::MoveX(dx, deltaTime, jumping);
     }
     void MoveY(GLfloat dy, GLdouble deltaTime){
         Character::MoveY(dy, deltaTime);

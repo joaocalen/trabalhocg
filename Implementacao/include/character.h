@@ -23,14 +23,18 @@ public:
     GLfloat gY;
     GLfloat gRadius;
     GLfloat gVel;
-    GLfloat thetaArm;    
+    GLfloat thetaArm;
+    GLfloat thetaLeg;
     bool right_sided;
+    bool thetaLegIncreasing;
     Shot* shot;
     Character(GLfloat gX, GLfloat gY, GLfloat gRadius, GLfloat gVel){
         this->gX = gX;
         this->gY = gY;
         this->gRadius = gRadius;
         this->thetaArm = 90;
+        this->thetaLeg = 0;
+        this->thetaLegIncreasing = true;
         this->gVel = gVel;
         this->right_sided = true;
         shot = NULL;
@@ -38,7 +42,7 @@ public:
     void Draw(GLfloat x,GLfloat y, GLfloat radius, GLfloat R, GLfloat G, GLfloat B){ 
         DrawCharacter(x, y, radius, R, G, B);
     };
-    void MoveX(GLfloat dx, GLdouble deltaTime);
+    void MoveX(GLfloat dx, GLdouble deltaTime, bool jumping);
     void MoveY(GLfloat dy, GLdouble deltaTime);
     Shot* Shoot();
     void GetPos(GLfloat &xOut, GLfloat &yOut){

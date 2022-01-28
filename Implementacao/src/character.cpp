@@ -25,7 +25,10 @@ void Character::DrawBody(GLfloat radius, GLfloat R, GLfloat G, GLfloat B)
 void Character::DrawLeftLeg(GLfloat radius, GLfloat R, GLfloat G, GLfloat B)
 {
     glPushMatrix();
-    // glRotatef(15, 0, 0, 1);
+    if(right_sided)
+        glRotatef(thetaLeg, 0, 0, 1);
+    else
+        glRotatef(-thetaLeg, 0, 0, 1);
     glBegin(GL_POLYGON);
         glVertex2f (-radius/32, 0);
         glVertex2f (radius/32, 0);
@@ -33,7 +36,10 @@ void Character::DrawLeftLeg(GLfloat radius, GLfloat R, GLfloat G, GLfloat B)
         glVertex2f (-radius/32, 4*radius/16);
     glEnd();
     glTranslatef(0,4*radius/16,0);
-    // glRotatef(-30, 0, 0, 1);
+    if(right_sided)
+        glRotatef(-30, 0, 0, 1);
+    else
+        glRotatef(15, 0, 0, 1);
     glBegin(GL_POLYGON);
         glVertex2f (-radius/32, 0);
         glVertex2f (radius/32, 0);
@@ -46,7 +52,10 @@ void Character::DrawLeftLeg(GLfloat radius, GLfloat R, GLfloat G, GLfloat B)
 void Character::DrawRightLeg(GLfloat radius, GLfloat R, GLfloat G, GLfloat B)
 {
     glPushMatrix();
-    glRotatef(-15, 0, 0, 1);
+    if(right_sided)
+        glRotatef(-thetaLeg, 0, 0, 1);
+    else
+        glRotatef(thetaLeg, 0, 0, 1);
     glBegin(GL_POLYGON);
         glVertex2f (-radius/32, 0);
         glVertex2f (radius/32, 0);
@@ -54,7 +63,10 @@ void Character::DrawRightLeg(GLfloat radius, GLfloat R, GLfloat G, GLfloat B)
         glVertex2f (-radius/32, 4*radius/16);
     glEnd();
     glTranslatef(0,4*radius/16,0);
-    glRotatef(-15, 0, 0, 1);
+    if(right_sided)
+        glRotatef(-15, 0, 0, 1);
+    else
+        glRotatef(30, 0, 0, 1);
     glBegin(GL_POLYGON);
         glVertex2f (-radius/32, 0);
         glVertex2f (radius/32, 0);
@@ -107,11 +119,20 @@ void Character::DrawCharacter(GLfloat x, GLfloat y, GLfloat radius, GLfloat R, G
     glPopMatrix();
 }
 
-void Character::MoveX(GLfloat dx, GLdouble deltaTime)
+void Character::MoveX(GLfloat dx, GLdouble deltaTime, bool jumping)
 {
     if(dx > 0) this->right_sided = true;
     else this->right_sided = false;
     this -> gX += dx * deltaTime;
+    if(!jumping){
+        if(abs(thetaLeg + abs(dx * deltaTime * 3)) > 45)
+            thetaLegIncreasing = !thetaLegIncreasing;
+        if(thetaLegIncreasing)
+            thetaLeg += abs(dx * deltaTime* 3);
+        else
+            thetaLeg -= abs(dx * deltaTime* 3);
+    }
+        
 }
 
 void Character::MoveY(GLfloat dy, GLdouble deltaTime)

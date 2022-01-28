@@ -36,7 +36,7 @@ const GLint ViewingWidth = 500;
 const GLint ViewingHeight = 500;
 
 //Controla a animacao do robo
-int animate = 0;
+int ia = 1;
 int old_x = -INT_MAX;
 int old_y = -INT_MAX;
 static char str[999];
@@ -89,7 +89,7 @@ void keyPress(unsigned char key, int x, int y)
     switch (key)
     {
         case '1':
-             animate = !animate;
+             ia = !ia;
              break;
         case 'a':
         case 'A':
@@ -209,11 +209,11 @@ void idle(void)
     }    
     if(keyStatus[(int)('a')])
     {
-        if(arena.ableToMoveX(-inc*deltaTime, arena.player.getgX(), arena.player.getgY(), arena.player.getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.player.MoveX(-inc, deltaTime);
+        if(arena.ableToMoveX(-inc*deltaTime, arena.player.getgX(), arena.player.getgY(), arena.player.getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.player.MoveX(-inc, deltaTime, arena.player.getJumping());
     }
     if(keyStatus[(int)('d')])
     {
-        if(arena.ableToMoveX(inc*deltaTime, arena.player.getgX(), arena.player.getgY(), arena.player.getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.player.MoveX(inc, deltaTime);
+        if(arena.ableToMoveX(inc*deltaTime, arena.player.getgX(), arena.player.getgY(), arena.player.getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.player.MoveX(inc, deltaTime, arena.player.getJumping());
     }   
 
     if(arena.player.getJumping())
@@ -245,22 +245,22 @@ void idle(void)
             arena.player.setAbleToJump(1);
         }
     }
-    
-    for(int i = 0; i < arena.enemies.size(); i++)
-    {
-        if (arena.enemies.at(i).getRightSided())
+    if(ia){
+        for(int i = 0; i < arena.enemies.size(); i++)
         {
-            if(arena.ableToMoveX(inc*deltaTime, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(), arena.player, arena.enemies, arena.obstacles) && !arena.ableToMoveY(-incy, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.enemies.at(i).MoveX(inc, deltaTime);
-            else arena.enemies.at(i).MoveX(-inc, deltaTime);
-        }
-        else
-        {
-            if(arena.ableToMoveX(-inc*deltaTime, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(), arena.player, arena.enemies, arena.obstacles) && !arena.ableToMoveY(-incy, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.enemies.at(i).MoveX(-inc, deltaTime);
-            else arena.enemies.at(i).MoveX(inc, deltaTime);
-        }
-        
-    }   
-    
+            if (arena.enemies.at(i).getRightSided())
+            {
+                if(arena.ableToMoveX(inc*deltaTime, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(), arena.player, arena.enemies, arena.obstacles) && !arena.ableToMoveY(-incy, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.enemies.at(i).MoveX(inc, deltaTime, false);
+                else arena.enemies.at(i).MoveX(-inc, deltaTime,false);
+            }
+            else
+            {
+                if(arena.ableToMoveX(-inc*deltaTime, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(), arena.player, arena.enemies, arena.obstacles) && !arena.ableToMoveY(-incy, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.enemies.at(i).MoveX(-inc, deltaTime, false);
+                else arena.enemies.at(i).MoveX(inc, deltaTime,false);
+            }
+            
+        }   
+    }
     if(arena.player.getShot()){
         GLfloat x_shot;
         GLfloat y_shot;
@@ -276,28 +276,28 @@ void idle(void)
             arena.player.deleteShot();
         }
     }
-    
-    for(int i = 0; i < arena.enemies.size(); i++)
-    {
-        if(arena.enemies.at(i).getShot()){
-            GLfloat x_shot;
-            GLfloat y_shot;
-            arena.enemies.at(i).getShot()->GetPos(x_shot,y_shot);
+    if(ia){
+        for(int i = 0; i < arena.enemies.size(); i++)
+        {
+            if(arena.enemies.at(i).getShot()){
+                GLfloat x_shot;
+                GLfloat y_shot;
+                arena.enemies.at(i).getShot()->GetPos(x_shot,y_shot);
 
-            arena.enemies.at(i).getShot()->Move(deltaTime);
-            if (!arena.enemies.at(i).getShot()->Valid()){ 
-                arena.enemies.at(i).deleteShot();
+                arena.enemies.at(i).getShot()->Move(deltaTime);
+                if (!arena.enemies.at(i).getShot()->Valid()){ 
+                    arena.enemies.at(i).deleteShot();
+                }
+                if (!arena.ableToMoveY(0, x_shot, y_shot, 0.3, arena.player, arena.enemies, arena.obstacles) || !arena.ableToMoveX(0, x_shot, y_shot, 0.3, arena.player, arena.enemies, arena.obstacles))
+                {
+                    arena.enemies.at(i).deleteShot();
+                }
             }
-            if (!arena.ableToMoveY(0, x_shot, y_shot, 0.3, arena.player, arena.enemies, arena.obstacles) || !arena.ableToMoveX(0, x_shot, y_shot, 0.3, arena.player, arena.enemies, arena.obstacles))
-            {
-                arena.enemies.at(i).deleteShot();
-            }
+            else{
+                arena.enemies.at(i).Shoot();
+            }        
         }
-        else{
-            arena.enemies.at(i).Shoot();
-        }        
     }
-    
     
    
     glutPostRedisplay();
