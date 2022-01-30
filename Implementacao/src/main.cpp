@@ -8,40 +8,20 @@
 #include "../include/arena.h"
 #define WINDOW_SIZE 500
 
-
-// TODO:
-/*
-Finish the game if player gets shot. -> (done)
-Final messages (win or loose). -> (done).
-Fix Jump. -> (almost done)
-Fix character moviment.
-Create win condition when the player gets in the final spot. -> (done)
-Fix camera to follow player. (done)
-Create parameters for the program (deltaTime). -> (done)
-Fix IA to shoot in player direction (optional).
-Recriate the game when the "r" button is pressed. -> (done)
-Read the svg file from the terminal
-*/
-
-
 //Key status
 int keyStatus[256];
-
-// Window dimensions
-const GLint Width = 700;
-const GLint Height = 700;
 
 // Viewing dimensions
 const GLint ViewingWidth = 500;
 const GLint ViewingHeight = 500;
 
-//Controla a animacao do robo
 int ia = 1;
 int old_x = -INT_MAX;
 int old_y = -INT_MAX;
 static char str[999];
 bool availableToShoot = true;
 bool camera = true;
+GLdouble timeLastShoot = 0;
 Arena arena;
 
 void RenderFinalMessage()
@@ -49,7 +29,7 @@ void RenderFinalMessage()
     glColor3f(1.0f, 1.0f, 1.0f); 
     glRasterPos2f(arena.player.getgX(), 0);
     if(arena.win)
-        sprintf(str, "VITORIA!");
+        sprintf(str, "YOU WIN!");
     else
         sprintf(str, "GAME OVER!");
     char* text;    
@@ -63,9 +43,8 @@ void RenderFinalMessage()
 
 void renderScene(void)
 {
-     // Clear the screen.
-     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-     glClear(GL_COLOR_BUFFER_BIT);     
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);     
     
     arena.Draw();
 
@@ -77,9 +56,8 @@ void renderScene(void)
     {
         RenderFinalMessage();        
     }
-    //  alvo.Desenha();
-
-     glutSwapBuffers(); // Desenha the new frame of the game.
+    
+    glutSwapBuffers();
 }
 
 void keyPress(unsigned char key, int x, int y)
@@ -94,11 +72,11 @@ void keyPress(unsigned char key, int x, int y)
              break;
         case 'a':
         case 'A':
-             keyStatus[(int)('a')] = 1; //Using keyStatus trick
+             keyStatus[(int)('a')] = 1;
              break;
         case 'd':
         case 'D':
-             keyStatus[(int)('d')] = 1; //Using keyStatus trick
+             keyStatus[(int)('d')] = 1;
              break;
         case 'r':
         case 'R':
@@ -106,7 +84,7 @@ void keyPress(unsigned char key, int x, int y)
             arena.LoadComponents();
              break;
         case ' ':
-        keyStatus[(int)(' ')] = 1; //Using keyStatus trick
+        keyStatus[(int)(' ')] = 1;
              break;
         case 27 :
              exit(0);
@@ -123,7 +101,6 @@ void keyup(unsigned char key, int x, int y)
 void ResetKeyStatus()
 {
     int i;
-    //Initialize keyStatus
     for(i = 0; i < 256; i++)
        keyStatus[i] = 0; 
 }
@@ -140,17 +117,16 @@ void motion(int x, int y)
 void init(void)
 {
     ResetKeyStatus();
-    // The color the windows will redraw. Its done to erase the previous frame.
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Black, no opacity(alpha).
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
  
-    glMatrixMode(GL_PROJECTION); // Select the projection matrix
-    glOrtho(-(ViewingWidth/2),     // X coordinate of left edge          
-            (ViewingWidth/2),     // X coordinate of right edge         
-            -(ViewingHeight/2),     // Y coordinate of bottom edge        
-            (ViewingHeight/2),     // Y coordinate of top edge           
-            -100,     // Z coordinate of the “near” plane   
-            100);    // Z coordinate of the “far” plane
-    glMatrixMode(GL_MODELVIEW); // Select the projection matrix
+    glMatrixMode(GL_PROJECTION);
+    glOrtho(-(ViewingWidth/2),
+            (ViewingWidth/2),
+            -(ViewingHeight/2),
+            (ViewingHeight/2),
+            -100,
+            100);
+    glMatrixMode(GL_MODELVIEW); 
     glLoadIdentity();
     
 }
@@ -172,8 +148,10 @@ void mouseclick(int button, int state, int x, int y)
     }
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
     {
-            if(availableToShoot)
+            if(availableToShoot && glutGet(GLUT_ELAPSED_TIME) - timeLastShoot > 1000){
                 arena.shots.push_back(arena.player.Shoot());
+                timeLastShoot = glutGet(GLUT_ELAPSED_TIME); 
+            }
     }
 }
 
@@ -187,10 +165,11 @@ void idle(void)
     static GLdouble timeToShoot = 0;
     double inc = INC_KEYIDLE * arena.player.getgVel();
     double incy = INC_KEYIDLE * arena.player.getgVel();
+
     //Treat win/loose condition
     if(arena.win || arena.loose){        
         return;
-    }
+    }    
     
     // Camera
     if (camera){
@@ -201,10 +180,10 @@ void idle(void)
     } else{
         glMatrixMode(GL_PROJECTION); 
         glLoadIdentity();
-        glOrtho(-(ViewingWidth/2),     // X coordinate of left edge          
-            (ViewingWidth/2),     // X coordinate of right edge         
-            -(ViewingHeight/2),     // Y coordinate of bottom edge        
-            (ViewingHeight/2),-1,1);    
+        glOrtho(-(ViewingWidth/2),
+            (ViewingWidth/2),
+            -(ViewingHeight/2),
+            (ViewingHeight/2),-1,1);
         glMatrixMode(GL_MODELVIEW); 
     }
 
@@ -223,8 +202,7 @@ void idle(void)
         arena.player.setAbleToJump(0);
         if(arena.ableToMoveY(incy*deltaTime, arena.player.getgX(), arena.player.getgY(), arena.player.getgRadius(),arena.player, arena.enemies, arena.obstacles) && arena.player.getgY() < arena.player.getYIniJump() + arena.player.getgRadius()*6)
         {
-            arena.player.MoveY(incy, deltaTime);
-            // arena.player.setJumping(0);
+            arena.player.MoveY(incy, deltaTime);            
             arena.player.setFalling(0);
         }
         else
@@ -252,13 +230,13 @@ void idle(void)
         {
             if (arena.enemies.at(i).getRightSided())
             {
-                if(arena.ableToMoveX(inc*deltaTime, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(), arena.player, arena.enemies, arena.obstacles) && !arena.ableToMoveY(-incy, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.enemies.at(i).MoveX(inc, deltaTime, false);
-                else arena.enemies.at(i).MoveX(-inc, deltaTime,false);
+                if(arena.ableToMoveX(inc*deltaTime, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(), arena.player, arena.enemies, arena.obstacles) && (!arena.ableToMoveY(-incy, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(),arena.player, arena.enemies, arena.obstacles))) arena.enemies.at(i).MoveX(inc, deltaTime, false);
+                else arena.enemies.at(i).MoveX(-inc, deltaTime*2,false);
             }
             else
             {
-                if(arena.ableToMoveX(-inc*deltaTime, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(), arena.player, arena.enemies, arena.obstacles) && !arena.ableToMoveY(-incy, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(),arena.player, arena.enemies, arena.obstacles)) arena.enemies.at(i).MoveX(-inc, deltaTime, false);
-                else arena.enemies.at(i).MoveX(inc, deltaTime,false);
+                if(arena.ableToMoveX(-inc*deltaTime, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(), arena.player, arena.enemies, arena.obstacles) && (!arena.ableToMoveY(-incy, arena.enemies.at(i).getgX(), arena.enemies.at(i).getgY(), arena.enemies.at(i).getgRadius(),arena.player, arena.enemies, arena.obstacles))) arena.enemies.at(i).MoveX(-inc, deltaTime, false);
+                else arena.enemies.at(i).MoveX(inc, deltaTime*2,false);
             }
             
         }   
@@ -270,32 +248,18 @@ void idle(void)
         GLfloat y_shot;
         arena.shots.at(i) -> GetPos(x_shot,y_shot);
         arena.shots.at(i) -> Move(deltaTime);
-        // if(!s->Valid())
-        // {
-        //     arena.shots.erase(arena.shots.begin() + aux);
-        //     free(s);
-        // }
+        if(!arena.shots.at(i)->Valid())
+        {
+            free(arena.shots.at(i));
+            arena.shots.erase(arena.shots.begin() + i);            
+        }
         if (!arena.ableToMoveY(0, x_shot, y_shot, 0.3, arena.player, arena.enemies, arena.obstacles) || !arena.ableToMoveX(0, x_shot, y_shot, 0.3, arena.player, arena.enemies, arena.obstacles))
         {
             free(arena.shots.at(i));
             arena.shots.erase(arena.shots.begin() + i);            
         }    
     }
-    // if(arena.player.getShot()){
-    //     GLfloat x_shot;
-    //     GLfloat y_shot;
-    //     arena.player.getShot()->GetPos(x_shot,y_shot);
-
-    //     arena.player.getShot()->Move(deltaTime);        
-
-    //     if (!arena.player.getShot()->Valid()){ 
-    //         arena.player.deleteShot();
-    //     }
-    //     if (!arena.ableToMoveY(0, x_shot, y_shot, 0.3, arena.player, arena.enemies, arena.obstacles) || !arena.ableToMoveX(0, x_shot, y_shot, 0.3, arena.player, arena.enemies, arena.obstacles))
-    //     {
-    //         arena.player.deleteShot();
-    //     }
-    // }
+    
     if(ia){
         for(int i = 0; i < arena.enemies.size(); i++)
         {
@@ -321,8 +285,6 @@ int main(int argc, char *argv[])
         arena.svg_path = argv[argc-1];
         arena.LoadComponents();
     }
-    // Initialize openGL with Double buffer and RGB color without transparency.
-    // Its interesting to try GLUT_SINGLE instead of GLUT_DOUBLE.
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
  

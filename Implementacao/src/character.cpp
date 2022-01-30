@@ -125,14 +125,16 @@ void Character::MoveX(GLfloat dx, GLdouble deltaTime, bool jumping)
     else this->right_sided = false;
     this -> gX += dx * deltaTime;
     if(!jumping){
-        if(abs(thetaLeg + abs(dx * deltaTime * 3)) > 45)
+        if(abs(thetaLeg + abs(dx * deltaTime * 3)) > 45){
             thetaLegIncreasing = !thetaLegIncreasing;
+            // thetaLeg = 45 * signbit(thetaLeg);
+        }
         if(thetaLegIncreasing)
             thetaLeg += abs(dx * deltaTime* 3);
         else
-            thetaLeg -= abs(dx * deltaTime* 3);
+            thetaLeg -= abs(dx * deltaTime* 3);        
     }
-        
+    if(thetaLeg > 45) thetaLeg = 45;        
 }
 
 void Character::MoveY(GLfloat dy, GLdouble deltaTime)

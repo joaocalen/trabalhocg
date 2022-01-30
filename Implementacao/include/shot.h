@@ -2,7 +2,7 @@
 #define	TIRO_H
 #include <GL/gl.h>
 #include <GL/glu.h>
-#define radiusShot 5
+#define MAX_DISTANCE 60
 
 class Shot {
     GLfloat gXInit; 

@@ -30,7 +30,8 @@ void Arena::LoadComponents(){
             Obstacle ob(cx + width/2,-cy -height,width,height);
             this->obstacles.push_back(ob);
         } else{
-            cout <<"Erro inesperado! " << endl;
+            cout <<"Unknown error while reading the svg." << endl;
+            return;
         }        
         element = element -> NextSiblingElement("rect");
     }
@@ -40,7 +41,7 @@ void Arena::LoadComponents(){
         element->QueryDoubleAttribute("cx", &cx);
         element->QueryDoubleAttribute("cy", &cy);
         element->QueryDoubleAttribute("r", &r);
-        element->QueryStringAttribute("fill",&fill);        
+        element->QueryStringAttribute("fill",&fill);
         cy = cy - this->centerY - this->height/2;
         cx = cx - this->centerX - this->width/2;
         if(!strcmp("green",fill)){
@@ -52,7 +53,8 @@ void Arena::LoadComponents(){
             Enemy enemy(cx,-cy,r,0.6*r);
             this->enemies.push_back(enemy);
         } else{
-            cout <<"Erro inesperado! " << endl;
+            cout <<"Unknown error while reading the svg." << endl;
+            return;
         } 
         element = element -> NextSiblingElement("circle");
     }
@@ -99,7 +101,7 @@ void Arena::DrawEnemies(vector<Enemy> enemies)
 
 bool Arena::ableToMoveX(GLfloat dx, GLfloat x, GLfloat y, GLfloat radius, Player player, vector<Enemy> enemies, vector<Obstacle> obstacles)
 {
-    if(checkCollisionArenaBounds(x + dx, y, radius))
+    if(checkCollisionArenaBounds(x + dx, 0, radius))
     {
         if(x == player.getgX() && y == player.getgY() && x + dx + radius > this->width/2)
             win = true;
@@ -135,7 +137,7 @@ bool Arena::ableToMoveX(GLfloat dx, GLfloat x, GLfloat y, GLfloat radius, Player
 
 bool Arena::ableToMoveY(GLfloat dy, GLfloat x, GLfloat y, GLfloat radius, Player player, vector<Enemy> enemies, vector<Obstacle> obstacles)
 {
-    if(checkCollisionArenaBounds(x, y + dy, radius)) return false;    
+    if(checkCollisionArenaBounds(0, y + dy, radius)) return false;    
     for(Obstacle o : obstacles)
     {
         GLfloat oX, oY;
@@ -166,7 +168,7 @@ bool Arena::ableToMoveY(GLfloat dy, GLfloat x, GLfloat y, GLfloat radius, Player
 
 bool Arena::checkCollisionArenaBounds(GLfloat x1, GLfloat y1, GLfloat radius1)
 {
-    return (x1 - radius1/2 < -this->width/2 || x1 + radius1/2 > this->width/2 || y1 -radius1 < -this->height/2 || y1 +radius1 > this->height/2);
+    return (x1 - radius1/2 < -this->width/2 || x1 + radius1/2 > this->width/2 || y1 - radius1 < -this->height/2 || y1 +radius1 > this->height/2);
 }
 bool Arena::checkCollisionCharacter(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2, GLfloat radius1, GLfloat radius2)
 {

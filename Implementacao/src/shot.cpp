@@ -1,6 +1,5 @@
 #include "../include/shot.h"
 #include <math.h>
-#define DISTANCIA_MAX 500
 
 void Shot::DrawCircle(GLfloat radius, GLfloat R, GLfloat G, GLfloat B)
 {
@@ -28,5 +27,5 @@ void Shot::Move(GLdouble deltaTime)
 
 bool Shot::Valid()
 {
-    return DISTANCIA_MAX > sqrt(pow(gX-gXInit,2) + pow(gY-gYInit,2));
+    return MAX_DISTANCE > fabs(gXInit - gX);
 }
